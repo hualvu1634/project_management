@@ -48,7 +48,4 @@ public class Task {
     @JoinColumn(name = "assignee_id")
     private User assignee;
 
-    @Column(nullable = false)
-    @Builder.Default
-    private Boolean isActive = true;
 }

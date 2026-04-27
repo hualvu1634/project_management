@@ -3,6 +3,7 @@ package huan.backend.service;
 import huan.backend.dto.request.MemberRequest;
 import huan.backend.dto.response.ApiResponse;
 import huan.backend.dto.response.MemberResponse;
+import huan.backend.dto.response.PageResponse;
 import huan.backend.entity.Member;
 import huan.backend.entity.Project;
 import huan.backend.entity.User;
@@ -13,11 +14,15 @@ import huan.backend.repository.MemberRepository;
 import huan.backend.repository.ProjectRepository;
 import huan.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-
-import java.time.LocalDateTime;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -48,24 +53,40 @@ public class MemberService {
         return memberMapper.toResponse(memberRepository.save(member));
     }
 
+    // BỔ SUNG HÀM LẤY DANH SÁCH THÀNH VIÊN PHÂN TRANG
+    public PageResponse<MemberResponse> getMembersByProject(Long projectId, int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        
+        Page<Member> pageData = memberRepository.findByProjectIdAndIsActiveTrue(projectId, pageable);
+
+        List<MemberResponse> responseList = pageData.getContent().stream()
+                .map(memberMapper::toResponse)
+                .collect(Collectors.toList());
+
+        return PageResponse.<MemberResponse>builder()
+                .currentPage(page)
+                .pageSize(pageData.getSize())
+                .totalPages(pageData.getTotalPages())
+                .totalElements(pageData.getTotalElements())
+                .data(responseList)
+                .build();
+    }
+
     @Transactional
     public ApiResponse removeMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(()->  new AppException(ErrorCode.MEMBER_NOT_FOUND));
         
-        // Soft delete thành viên
         member.setIsActive(false);
         memberRepository.save(member);
 
-        // Tự động giảm teamsize
         Project project = member.getProject();
         if (project.getTeamsize() > 0) {
             project.setTeamsize(project.getTeamsize() - 1);
             projectRepository.save(project);
-                
         }
-         return ApiResponse.builder().timestamp(LocalDateTime.now())
+        return ApiResponse.builder().timestamp(LocalDateTime.now())
                 .code(200)
-                .message("Xóa dự án thành công")
+                .message("Xóa thành viên thành công")
                 .build();
     }
 }

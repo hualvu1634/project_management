@@ -1,6 +1,7 @@
 package huan.backend.controller;
 
 import huan.backend.dto.request.TaskRequest;
+import huan.backend.dto.response.PageResponse;
 import huan.backend.dto.response.TaskResponse;
 import huan.backend.enumerate.TaskStatus;
 import huan.backend.service.TaskService;
@@ -21,10 +22,20 @@ public class TaskController {
         return new ResponseEntity<>(taskService.createTask(request), HttpStatus.CREATED);
     }
 
+    // BỔ SUNG: API lấy danh sách Task của 1 dự án (có phân trang)
+    @GetMapping("/project/{projectId}")
+    public ResponseEntity<PageResponse<TaskResponse>> getTasksByProject(
+            @PathVariable Long projectId,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return ResponseEntity.ok(taskService.getTasksByProject(projectId, page, size));
+    }
+
     @PutMapping("/{id}/status")
     public ResponseEntity<TaskResponse> updateTaskStatus(
             @PathVariable Long id, 
-            @RequestParam TaskStatus status) { // Dùng @RequestParam để truyền trạng thái trực tiếp trên URL 
+            @RequestParam TaskStatus status) { 
         return ResponseEntity.ok(taskService.updateTaskStatus(id, status));
     }
 }

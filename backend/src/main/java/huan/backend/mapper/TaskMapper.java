@@ -20,6 +20,6 @@ public interface TaskMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "project", ignore = true)  // Sẽ được set ở Service
     @Mapping(target = "assignee", ignore = true) // Sẽ được set ở Service
-    @Mapping(target = "isActive", constant = "true")
+
     Task toEntity(TaskRequest request);
 }

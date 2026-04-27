@@ -16,5 +16,4 @@ public class TaskResponse {
     private TaskStatus status;
     private Long assigneeId;
     private String assigneeName; 
-    private Boolean isActive;
 }

@@ -2,14 +2,13 @@ package huan.backend.controller;
 
 import huan.backend.dto.request.ProjectRequest;
 import huan.backend.dto.response.ApiResponse;
+import huan.backend.dto.response.PageResponse;
 import huan.backend.dto.response.ProjectResponse;
 import huan.backend.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/projects")
@@ -24,8 +23,11 @@ public class ProjectController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProjectResponse>> getAllActiveProjects() {
-        return ResponseEntity.ok(projectService.getAllActiveProjects());
+    public ResponseEntity<PageResponse<ProjectResponse>> getAllActiveProjects(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return ResponseEntity.ok(projectService.getAllActiveProjects(page, size));
     }
 
     @PutMapping("/{id}")

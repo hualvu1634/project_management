@@ -2,6 +2,7 @@ package huan.backend.service;
 
 import huan.backend.dto.request.ProjectRequest;
 import huan.backend.dto.response.ApiResponse;
+import huan.backend.dto.response.PageResponse;
 import huan.backend.dto.response.ProjectResponse;
 import huan.backend.entity.Member;
 import huan.backend.entity.Project;
@@ -14,6 +15,9 @@ import huan.backend.repository.MemberRepository;
 import huan.backend.repository.ProjectRepository;
 import huan.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +36,6 @@ public class ProjectService {
 
     @Transactional
     public ProjectResponse createProject(ProjectRequest request) {
-    
         User owner = userRepository.findById(request.getOwnerId())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         Project project = projectMapper.toEntity(request);
@@ -48,10 +51,24 @@ public class ProjectService {
         return projectMapper.toResponse(save);
     }
 
-    public List<ProjectResponse> getAllActiveProjects() {
-        return projectRepository.findAllByIsActiveTrue().stream()
+
+    public PageResponse<ProjectResponse> getAllActiveProjects(int page, int size) {
+  
+        Pageable pageable = PageRequest.of(page - 1, size);
+        
+        Page<Project> pageData = projectRepository.findAllByIsActiveTrue(pageable);
+
+        List<ProjectResponse> responseList = pageData.getContent().stream()
                 .map(projectMapper::toResponse)
                 .collect(Collectors.toList());
+
+        return PageResponse.<ProjectResponse>builder()
+                .currentPage(page)
+                .pageSize(pageData.getSize())
+                .totalPages(pageData.getTotalPages())
+                .totalElements(pageData.getTotalElements())
+                .data(responseList)
+                .build();
     }
 
     @Transactional

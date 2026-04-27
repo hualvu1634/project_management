@@ -1,6 +1,7 @@
 package huan.backend.service;
 
 import huan.backend.dto.request.TaskRequest;
+import huan.backend.dto.response.PageResponse;
 import huan.backend.dto.response.TaskResponse;
 import huan.backend.entity.Project;
 import huan.backend.entity.Task;
@@ -13,8 +14,14 @@ import huan.backend.repository.ProjectRepository;
 import huan.backend.repository.TaskRepository;
 import huan.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -49,7 +56,6 @@ public class TaskService {
             task.setAssignee(assignee);
         }
 
-        // 4. Lưu dữ liệu và trả về Response
         return taskMapper.toResponse(taskRepository.save(task));
     }
     
@@ -60,5 +66,25 @@ public class TaskService {
                 
         task.setStatus(newStatus);
         return taskMapper.toResponse(taskRepository.save(task));
+    }
+
+   
+    public PageResponse<TaskResponse> getTasksByProject(Long projectId, int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        
+       
+        Page<Task> pageData = taskRepository.findByProjectId(projectId, pageable);
+
+        List<TaskResponse> responseList = pageData.getContent().stream()
+                .map(taskMapper::toResponse)
+                .collect(Collectors.toList());
+
+        return PageResponse.<TaskResponse>builder()
+                .currentPage(page)
+                .pageSize(pageData.getSize())
+                .totalPages(pageData.getTotalPages())
+                .totalElements(pageData.getTotalElements())
+                .data(responseList)
+                .build();
     }
 }
