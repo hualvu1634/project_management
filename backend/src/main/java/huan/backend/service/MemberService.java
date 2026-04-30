@@ -53,7 +53,6 @@ public class MemberService {
         return memberMapper.toResponse(memberRepository.save(member));
     }
 
-    // BỔ SUNG HÀM LẤY DANH SÁCH THÀNH VIÊN PHÂN TRANG
     public PageResponse<MemberResponse> getMembersByProject(Long projectId, int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size);
         

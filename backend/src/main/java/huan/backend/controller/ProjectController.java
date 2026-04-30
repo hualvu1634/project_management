@@ -22,12 +22,13 @@ public class ProjectController {
         return new ResponseEntity<>(projectService.createProject(request), HttpStatus.CREATED);
     }
 
-    @GetMapping
-    public ResponseEntity<PageResponse<ProjectResponse>> getAllActiveProjects(
+    @GetMapping("{userId}")
+    public ResponseEntity<PageResponse<ProjectResponse>> getAllProjectsById(
+            @PathVariable Long userId,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        return ResponseEntity.ok(projectService.getAllActiveProjects(page, size));
+        return ResponseEntity.ok(projectService.getProjectsByUserId(userId,page, size));
     }
 
     @PutMapping("/{id}")

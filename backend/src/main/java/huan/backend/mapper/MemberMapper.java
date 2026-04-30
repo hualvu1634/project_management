@@ -12,7 +12,6 @@ public interface MemberMapper {
     // Map từ Entity ra Response
     @Mapping(target = "projectId", source = "project.id")
     @Mapping(target = "projectName", source = "project.name")
-    @Mapping(target = "userId", source = "user.id")
     @Mapping(target = "userName", source = "user.name")
     MemberResponse toResponse(Member member);
 

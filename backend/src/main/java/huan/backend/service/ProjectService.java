@@ -51,26 +51,26 @@ public class ProjectService {
         return projectMapper.toResponse(save);
     }
 
+public PageResponse<ProjectResponse> getProjectsByUserId(Long userId, int page, int size) {
+    Pageable pageable = PageRequest.of(page - 1, size);
+    
 
-    public PageResponse<ProjectResponse> getAllActiveProjects(int page, int size) {
-  
-        Pageable pageable = PageRequest.of(page - 1, size);
-        
-        Page<Project> pageData = projectRepository.findAllByIsActiveTrue(pageable);
+    Page<Member> memberPage = memberRepository.findByUserIdAndIsActiveTrue(userId, pageable);
 
-        List<ProjectResponse> responseList = pageData.getContent().stream()
-                .map(projectMapper::toResponse)
-                .collect(Collectors.toList());
+    List<ProjectResponse> responseList = memberPage.getContent().stream()
+            .map(Member::getProject) 
+            .filter(Project::getIsActive) 
+            .map(projectMapper::toResponse)
+            .collect(Collectors.toList());
 
-        return PageResponse.<ProjectResponse>builder()
-                .currentPage(page)
-                .pageSize(pageData.getSize())
-                .totalPages(pageData.getTotalPages())
-                .totalElements(pageData.getTotalElements())
-                .data(responseList)
-                .build();
-    }
-
+    return PageResponse.<ProjectResponse>builder()
+            .currentPage(page)
+            .pageSize(memberPage.getSize())
+            .totalPages(memberPage.getTotalPages())
+            .totalElements(memberPage.getTotalElements())
+            .data(responseList)
+            .build();
+}
     @Transactional
     public ProjectResponse updateProject(Long id, ProjectRequest request) {
         Project project = projectRepository.findById(id)

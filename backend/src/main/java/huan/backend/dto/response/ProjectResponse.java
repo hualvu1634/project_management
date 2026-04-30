@@ -11,7 +11,5 @@ public class ProjectResponse {
     private Long id;
     private String name;
     private String description;
-    private String ownerName;
     private Integer teamsize;
-    private Boolean isActive;
 }

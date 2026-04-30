@@ -14,5 +14,6 @@ public interface MemberRepository  extends JpaRepository<Member,Long>{
     boolean existsByProjectIdAndUserIdAndIsActiveTrue(Long id, Long id2);
     Optional<Member> findById(Long id);
     Page<Member> findByProjectIdAndIsActiveTrue(Long projectId, Pageable pageable);
+    Page<Member> findByUserIdAndIsActiveTrue(Long userId, Pageable pageable);
     
 }
