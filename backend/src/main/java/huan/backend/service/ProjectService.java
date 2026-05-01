@@ -8,7 +8,7 @@ import huan.backend.entity.Member;
 import huan.backend.entity.Project;
 import huan.backend.entity.User;
 import huan.backend.enumerate.ErrorCode;
-import huan.backend.enumerate.ProjectRole;
+
 import huan.backend.exception.AppException;
 import huan.backend.mapper.ProjectMapper;
 import huan.backend.repository.MemberRepository;
@@ -44,7 +44,6 @@ public class ProjectService {
         Member pmMember = Member.builder()
                 .project(save)
                 .user(owner)
-                .projectRole(ProjectRole.PROJECT_MANAGER)
                 .isActive(true)
                 .build();
         memberRepository.save(pmMember);

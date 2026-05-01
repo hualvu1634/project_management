@@ -13,7 +13,7 @@ public interface TaskMapper {
     @Mapping(target = "projectId", source = "project.id")
     @Mapping(target = "projectName", source = "project.name")
     @Mapping(target = "assigneeId", source = "assignee.id")
-    @Mapping(target = "assigneeName", source = "assignee.name", defaultValue = "Chưa giao")
+    @Mapping(target = "assigneeName", source = "assignee.name")
     TaskResponse toResponse(Task task);
 
     // Map từ Request vào Entity
@@ -21,5 +21,6 @@ public interface TaskMapper {
     @Mapping(target = "project", ignore = true)  // Sẽ được set ở Service
     @Mapping(target = "assignee", ignore = true) // Sẽ được set ở Service
 
+    @Mapping(target = "status",ignore = true)
     Task toEntity(TaskRequest request);
 }
