@@ -2,7 +2,7 @@ package huan.backend.service;
 
 import huan.backend.dto.request.ProjectRequest;
 import huan.backend.dto.response.ApiResponse;
-import huan.backend.dto.response.PageResponse;
+
 import huan.backend.dto.response.ProjectResponse;
 import huan.backend.entity.Member;
 import huan.backend.entity.Project;
@@ -15,15 +15,11 @@ import huan.backend.repository.MemberRepository;
 import huan.backend.repository.ProjectRepository;
 import huan.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -50,26 +46,7 @@ public class ProjectService {
         return projectMapper.toResponse(save);
     }
 
-public PageResponse<ProjectResponse> getProjectsByUserId(Long userId, int page, int size) {
-    Pageable pageable = PageRequest.of(page - 1, size);
-    
 
-    Page<Member> memberPage = memberRepository.findByUserIdAndIsActiveTrue(userId, pageable);
-
-    List<ProjectResponse> responseList = memberPage.getContent().stream()
-            .map(Member::getProject) 
-            .filter(Project::getIsActive) 
-            .map(projectMapper::toResponse)
-            .collect(Collectors.toList());
-
-    return PageResponse.<ProjectResponse>builder()
-            .currentPage(page)
-            .pageSize(memberPage.getSize())
-            .totalPages(memberPage.getTotalPages())
-            .totalElements(memberPage.getTotalElements())
-            .data(responseList)
-            .build();
-}
     @Transactional
     public ProjectResponse updateProject(Long id, ProjectRequest request) {
         Project project = projectRepository.findById(id)

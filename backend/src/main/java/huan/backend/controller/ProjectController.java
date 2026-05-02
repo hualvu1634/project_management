@@ -2,7 +2,7 @@ package huan.backend.controller;
 
 import huan.backend.dto.request.ProjectRequest;
 import huan.backend.dto.response.ApiResponse;
-import huan.backend.dto.response.PageResponse;
+
 import huan.backend.dto.response.ProjectResponse;
 import huan.backend.service.ProjectService;
 import lombok.RequiredArgsConstructor;
@@ -22,14 +22,6 @@ public class ProjectController {
         return new ResponseEntity<>(projectService.createProject(request), HttpStatus.CREATED);
     }
 
-    @GetMapping("{userId}")
-    public ResponseEntity<PageResponse<ProjectResponse>> getAllProjectsById(
-            @PathVariable Long userId,
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
-        return ResponseEntity.ok(projectService.getProjectsByUserId(userId,page, size));
-    }
 
     @PutMapping("/{id}")
     public ResponseEntity<ProjectResponse> updateProject(

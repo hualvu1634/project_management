@@ -2,9 +2,10 @@ package huan.backend.service;
 
 import huan.backend.dto.request.MemberRequest;
 import huan.backend.dto.response.ApiResponse;
-import huan.backend.dto.response.MemberProjectResponse; // Thêm import này
+import huan.backend.dto.response.MemberProjectResponse; 
 import huan.backend.dto.response.MemberResponse;
-// import huan.backend.dto.response.PageResponse; // Có thể xóa import này nếu không dùng ở hàm khác
+import huan.backend.dto.response.PageResponse;
+import huan.backend.dto.response.ProjectResponse;
 import huan.backend.entity.Member;
 import huan.backend.entity.Project;
 import huan.backend.entity.User;
@@ -12,10 +13,12 @@ import huan.backend.enumerate.ErrorCode;
 import huan.backend.enumerate.ProjectRole;
 import huan.backend.exception.AppException;
 import huan.backend.mapper.MemberMapper;
+import huan.backend.mapper.ProjectMapper;
 import huan.backend.repository.MemberRepository;
 import huan.backend.repository.ProjectRepository;
 import huan.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -34,6 +37,7 @@ public class MemberService {
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
     private final MemberMapper memberMapper;
+    private final ProjectMapper projectMapper;
 
     @Transactional
     public MemberResponse addMember(MemberRequest request) {
@@ -56,18 +60,15 @@ public class MemberService {
         return memberMapper.toResponse(memberRepository.save(member));
     }
 
-    // Đã thay đổi kiểu trả về và logic ở hàm này
+
     public MemberProjectResponse getMembersByProject(Long projectId, int page, int size) {
-        // 1. Tìm Project để lấy tên dự án, ném lỗi nếu không tồn tại
+     
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new AppException(ErrorCode.PROJECT_NOT_FOUND));
 
-        // 2. Phân trang và lấy danh sách Member
-        Pageable pageable = PageRequest.of(page - 1, size);
-        Page<Member> pageData = memberRepository.findByProjectIdAndIsActiveTrue(projectId, pageable);
+        List<Member> pageData = memberRepository.findByProjectIdAndIsActiveTrue(projectId);
 
-        // 3. Map dữ liệu sang MemberResponse
-        List<MemberResponse> responseList = pageData.getContent().stream()
+        List<MemberResponse> responseList = pageData.stream()
                 .map(memberMapper::toResponse)
                 .collect(Collectors.toList());
 
@@ -78,6 +79,27 @@ public class MemberService {
                 .build();
     }
 
+
+    public PageResponse<ProjectResponse> getProjectsByUserId(Long userId, int page, int size) {
+    Pageable pageable = PageRequest.of(page - 1, size);
+    
+
+    Page<Member> memberPage = memberRepository.findByUserIdAndIsActiveTrue(userId, pageable);
+
+    List<ProjectResponse> responseList = memberPage.getContent().stream()
+            .map(Member::getProject) 
+            .filter(Project::getIsActive) 
+            .map(projectMapper::toResponse)
+            .collect(Collectors.toList());
+
+    return PageResponse.<ProjectResponse>builder()
+            .currentPage(page)
+            .pageSize(memberPage.getSize())
+            .totalPages(memberPage.getTotalPages())
+            .totalElements(memberPage.getTotalElements())
+            .data(responseList)
+            .build();
+}
     @Transactional
     public ApiResponse removeMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(()->  new AppException(ErrorCode.MEMBER_NOT_FOUND));

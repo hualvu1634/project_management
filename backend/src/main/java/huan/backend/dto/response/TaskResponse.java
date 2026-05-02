@@ -9,11 +9,8 @@ import lombok.Setter;
 @Setter
 @Builder
 public class TaskResponse {
-    private Long id;
-    private Long projectId;
-    private String projectName;
+
     private String title;
     private TaskStatus status;
-    private Long assigneeId;
     private String assigneeName; 
 }

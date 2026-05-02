@@ -36,8 +36,5 @@ public class AuthController {
     public ResponseEntity<UserResponse> addUser(@Valid @RequestBody UserRequest userRequest){
         return new ResponseEntity<>(userService.addAccount(userRequest), HttpStatus.CREATED);
     }
-    @PostMapping("/refresh")
-    public ResponseEntity<String> refresh(@RequestBody String refreshToken) {
-    return ResponseEntity.ok(authenticationService.refreshToken(refreshToken));
-}
+   
 }

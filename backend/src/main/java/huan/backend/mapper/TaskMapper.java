@@ -9,10 +9,6 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface TaskMapper {
 
-    // Map từ Entity ra Response
-    @Mapping(target = "projectId", source = "project.id")
-    @Mapping(target = "projectName", source = "project.name")
-    @Mapping(target = "assigneeId", source = "assignee.id")
     @Mapping(target = "assigneeName", source = "assignee.name")
     TaskResponse toResponse(Task task);
 
@@ -20,7 +16,6 @@ public interface TaskMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "project", ignore = true)  
     @Mapping(target = "assignee", ignore = true) 
-
     @Mapping(target = "status",ignore = true)
     Task toEntity(TaskRequest request);
 }

@@ -22,7 +22,6 @@ public class TaskController {
         return new ResponseEntity<>(taskService.createTask(request), HttpStatus.CREATED);
     }
 
-    // BỔ SUNG: API lấy danh sách Task của 1 dự án (có phân trang)
     @GetMapping("/project/{projectId}")
     public ResponseEntity<PageResponse<TaskResponse>> getTasksByProject(
             @PathVariable Long projectId,
