@@ -41,6 +41,7 @@ public class TaskService {
                 .orElseThrow(() -> new AppException(ErrorCode.PROJECT_NOT_FOUND));
 
         Task task = taskMapper.toEntity(request);
+        task.setStatus(TaskStatus.TODO);
         task.setProject(project);
 
         if (request.getAssigneeId() != null) {

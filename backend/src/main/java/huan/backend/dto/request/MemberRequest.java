@@ -8,5 +8,4 @@ import lombok.Setter;
 public class MemberRequest {
     private Long projectId;
     private Long userId;
-
 }

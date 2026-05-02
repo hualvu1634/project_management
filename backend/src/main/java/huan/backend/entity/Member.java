@@ -1,10 +1,8 @@
 package huan.backend.entity;
 
-import huan.backend.enumerate.ProjectRole;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -39,11 +37,6 @@ public class Member {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
-
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private ProjectRole projectRole;
-
     @Column(nullable = false)
     @Builder.Default
     private Boolean isActive = true;
