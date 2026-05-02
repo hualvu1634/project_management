@@ -2,8 +2,9 @@ package huan.backend.service;
 
 import huan.backend.dto.request.MemberRequest;
 import huan.backend.dto.response.ApiResponse;
+import huan.backend.dto.response.MemberProjectResponse; // Thêm import này
 import huan.backend.dto.response.MemberResponse;
-import huan.backend.dto.response.PageResponse;
+// import huan.backend.dto.response.PageResponse; // Có thể xóa import này nếu không dùng ở hàm khác
 import huan.backend.entity.Member;
 import huan.backend.entity.Project;
 import huan.backend.entity.User;
@@ -38,7 +39,7 @@ public class MemberService {
     public MemberResponse addMember(MemberRequest request) {
         Project project = projectRepository.findById(request.getProjectId())
                 .orElseThrow(() -> new AppException(ErrorCode.PROJECT_NOT_FOUND));
-        User user = userRepository.findById(request.getUserId())
+        User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
         if (memberRepository.existsByProjectIdAndUserIdAndIsActiveTrue(project.getId(), user.getId())) {
@@ -55,21 +56,25 @@ public class MemberService {
         return memberMapper.toResponse(memberRepository.save(member));
     }
 
-    public PageResponse<MemberResponse> getMembersByProject(Long projectId, int page, int size) {
+    // Đã thay đổi kiểu trả về và logic ở hàm này
+    public MemberProjectResponse getMembersByProject(Long projectId, int page, int size) {
+        // 1. Tìm Project để lấy tên dự án, ném lỗi nếu không tồn tại
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new AppException(ErrorCode.PROJECT_NOT_FOUND));
+
+        // 2. Phân trang và lấy danh sách Member
         Pageable pageable = PageRequest.of(page - 1, size);
-        
         Page<Member> pageData = memberRepository.findByProjectIdAndIsActiveTrue(projectId, pageable);
 
+        // 3. Map dữ liệu sang MemberResponse
         List<MemberResponse> responseList = pageData.getContent().stream()
                 .map(memberMapper::toResponse)
                 .collect(Collectors.toList());
 
-        return PageResponse.<MemberResponse>builder()
-                .currentPage(page)
-                .pageSize(pageData.getSize())
-                .totalPages(pageData.getTotalPages())
-                .totalElements(pageData.getTotalElements())
-                .data(responseList)
+        // 4. Build và trả về MemberProjectResponse
+        return MemberProjectResponse.builder()
+                .name(project.getName())
+                .memberResponses(responseList)
                 .build();
     }
 

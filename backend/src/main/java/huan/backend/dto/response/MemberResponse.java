@@ -9,8 +9,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class MemberResponse {
-    private Long projectId;
-    private String projectName;
+   
     private String userName;
     private ProjectRole projectRole;
 }

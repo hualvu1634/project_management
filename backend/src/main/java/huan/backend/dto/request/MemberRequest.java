@@ -7,5 +7,5 @@ import lombok.Setter;
 @Setter
 public class MemberRequest {
     private Long projectId;
-    private Long userId;
+    private String  email;
 }

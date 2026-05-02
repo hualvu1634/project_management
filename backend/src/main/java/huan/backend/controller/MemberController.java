@@ -2,8 +2,8 @@ package huan.backend.controller;
 
 import huan.backend.dto.request.MemberRequest;
 import huan.backend.dto.response.ApiResponse;
+import huan.backend.dto.response.MemberProjectResponse;
 import huan.backend.dto.response.MemberResponse;
-import huan.backend.dto.response.PageResponse;
 import huan.backend.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,7 +23,7 @@ public class MemberController {
     }
     
     @GetMapping("/project/{projectId}")
-    public ResponseEntity<PageResponse<MemberResponse>> getMembersByProject(
+    public ResponseEntity<MemberProjectResponse> getMembersByProject(
             @PathVariable Long projectId,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size
