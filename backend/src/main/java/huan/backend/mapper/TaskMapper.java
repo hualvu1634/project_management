@@ -18,8 +18,8 @@ public interface TaskMapper {
 
     // Map từ Request vào Entity
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "project", ignore = true)  // Sẽ được set ở Service
-    @Mapping(target = "assignee", ignore = true) // Sẽ được set ở Service
+    @Mapping(target = "project", ignore = true)  
+    @Mapping(target = "assignee", ignore = true) 
 
     Task toEntity(TaskRequest request);
 }

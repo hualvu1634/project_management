@@ -20,5 +20,6 @@ public interface MemberMapper {
     @Mapping(target = "project", ignore = true) // Sẽ được set ở Service
     @Mapping(target = "user", ignore = true)    // Sẽ được set ở Service
     @Mapping(target = "isActive", constant = "true")
+    @Mapping(target = "projectRole",ignore = true)
     Member toEntity(MemberRequest request);
 }

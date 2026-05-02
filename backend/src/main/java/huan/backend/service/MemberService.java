@@ -8,6 +8,7 @@ import huan.backend.entity.Member;
 import huan.backend.entity.Project;
 import huan.backend.entity.User;
 import huan.backend.enumerate.ErrorCode;
+import huan.backend.enumerate.ProjectRole;
 import huan.backend.exception.AppException;
 import huan.backend.mapper.MemberMapper;
 import huan.backend.repository.MemberRepository;
@@ -47,6 +48,7 @@ public class MemberService {
         Member member = memberMapper.toEntity(request);
         member.setProject(project);
         member.setUser(user);
+        member.setProjectRole(ProjectRole.DEVELOPER);
         project.setTeamsize(project.getTeamsize() + 1);
         projectRepository.save(project);
 
