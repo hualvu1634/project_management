@@ -13,12 +13,13 @@ public enum ErrorCode {
     INVALID_SIZE(400, "Độ dài ký tự không hợp lệ"),
     INVALID_MIN(400, "Giá trị đầu vào không hợp lệ"),
     INVALID_PHONE(400, "Định dạng số điện thoại không hợp lệ"),
-
+    UNAUTHORIZED(403,"Không có quyền"),
     // --- CÁC MÃ LỖI CHO NGHIỆP VỤ JIRA ---
     PROJECT_NOT_FOUND(404, "Không tìm thấy dự án"),
     MEMBER_EXISTED(400, "Người dùng này đã là thành viên của dự án"),
     MEMBER_NOT_FOUND(404, "Không tìm thấy thành viên trong dự án"),
-    ASSIGNEE_NOT_IN_PROJECT(400, "Người được giao việc không phải là thành viên của dự án này");
+    ASSIGNEE_NOT_IN_PROJECT(400, "Người được giao việc không phải là thành viên của dự án này"),
+     TASK_NOT_FOUND(400,"Không tìm thấy công việc");
 
     private final int code;
     private final String message;

@@ -1,9 +1,10 @@
 package huan.backend.controller;
 
 import huan.backend.dto.request.TaskRequest;
+import huan.backend.dto.request.TaskStatusRequest;
 import huan.backend.dto.response.PageResponse;
 import huan.backend.dto.response.TaskResponse;
-import huan.backend.enumerate.TaskStatus;
+
 import huan.backend.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -33,8 +34,8 @@ public class TaskController {
 
     @PutMapping("/{id}/status")
     public ResponseEntity<TaskResponse> updateTaskStatus(
-            @PathVariable Long id, 
-            @RequestParam TaskStatus status) { 
-        return ResponseEntity.ok(taskService.updateTaskStatus(id, status));
+            @PathVariable  Long id, 
+            @RequestBody TaskStatusRequest taskStatusRequest) { 
+        return ResponseEntity.ok(taskService.updateTaskStatus(id, taskStatusRequest));
     }
 }
