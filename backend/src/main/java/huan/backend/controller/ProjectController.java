@@ -2,8 +2,10 @@ package huan.backend.controller;
 
 import huan.backend.dto.request.ProjectRequest;
 import huan.backend.dto.response.ApiResponse;
-
+import huan.backend.dto.response.MemberProjectResponse;
+import huan.backend.dto.response.PageResponse;
 import huan.backend.dto.response.ProjectResponse;
+import huan.backend.dto.response.TaskResponse;
 import huan.backend.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,23 @@ public class ProjectController {
     @PostMapping
     public ResponseEntity<ProjectResponse> createProject(@RequestBody ProjectRequest request) {
         return new ResponseEntity<>(projectService.createProject(request), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{id}")
+      public ResponseEntity<PageResponse<TaskResponse>> getTasksByProject(
+            @PathVariable Long id,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return ResponseEntity.ok(projectService.getTasksByProject(id, page, size));
+    }
+    @GetMapping("/{id}/members")
+        public ResponseEntity<MemberProjectResponse> getMembersByProject(
+            @PathVariable Long projectId,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return ResponseEntity.ok(projectService.getMembersByProject(projectId, page, size));
     }
 
 

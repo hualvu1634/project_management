@@ -93,26 +93,7 @@ public TaskResponse updateTaskStatus(Long taskId, TaskStatusRequest request) {
     return taskMapper.toResponse(taskRepository.save(task));
 }
 
-   
-    public PageResponse<TaskResponse> getTasksByProject(Long id, int page, int size) {
 
-        Pageable pageable = PageRequest.of(page - 1, size, Sort.by("id").ascending());
-        
-       
-        Page<Task> pageData = taskRepository.findByProjectId(id, pageable);
-
-        List<TaskResponse> responseList = pageData.getContent().stream()
-                .map(taskMapper::toResponse)
-                .collect(Collectors.toList());
-
-        return PageResponse.<TaskResponse>builder()
-                .currentPage(page)
-                .pageSize(pageData.getSize())
-                .totalPages(pageData.getTotalPages())
-                .totalElements(pageData.getTotalElements())
-                .data(responseList)
-                .build();
-    }
   
 public PageResponse<TaskResponse> getTasksByUserId(Long userId, int page, int size) {
 

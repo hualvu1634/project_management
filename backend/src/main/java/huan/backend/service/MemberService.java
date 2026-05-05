@@ -2,7 +2,6 @@ package huan.backend.service;
 
 import huan.backend.dto.request.MemberRequest;
 import huan.backend.dto.response.ApiResponse;
-import huan.backend.dto.response.MemberProjectResponse; 
 import huan.backend.dto.response.MemberResponse;
 
 import huan.backend.entity.Member;
@@ -19,11 +18,9 @@ import lombok.RequiredArgsConstructor;
 
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +31,6 @@ public class MemberService {
     private final UserRepository userRepository;
     private final MemberMapper memberMapper;
 
-    @Transactional
     public MemberResponse addMember(MemberRequest request) {
         Project project = projectRepository.findById(request.getProjectId())
                 .orElseThrow(() -> new AppException(ErrorCode.PROJECT_NOT_FOUND));
@@ -54,26 +50,6 @@ public class MemberService {
 
         return memberMapper.toResponse(memberRepository.save(member));
     }
-
-
-    public MemberProjectResponse getMembersByProject(Long projectId, int page, int size) {
-     
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new AppException(ErrorCode.PROJECT_NOT_FOUND));
-
-        List<Member> pageData = memberRepository.findByProjectIdAndIsActiveTrue(projectId);
-
-        List<MemberResponse> responseList = pageData.stream()
-                .map(memberMapper::toResponse)
-                .collect(Collectors.toList());
-
-        return MemberProjectResponse.builder()
-                .name(project.getName())
-                .memberResponses(responseList)
-                .build();
-    }
-
-
 
 
     public ApiResponse removeMember(Long id) {
