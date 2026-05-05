@@ -32,7 +32,7 @@ public class TaskController {
         return ResponseEntity.ok(taskService.getTasksByProject(projectId, page, size));
     }
 
-    @PutMapping("/{id}/status")
+    @PutMapping("/{id}")
     public ResponseEntity<TaskResponse> updateTaskStatus(
             @PathVariable  Long id, 
             @RequestBody TaskStatusRequest taskStatusRequest) { 

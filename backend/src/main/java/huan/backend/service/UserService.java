@@ -2,6 +2,7 @@ package huan.backend.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,13 +12,17 @@ import org.springframework.stereotype.Service;
 import huan.backend.dto.request.UserRequest;
 import huan.backend.dto.response.ApiResponse;
 import huan.backend.dto.response.PageResponse;
+import huan.backend.dto.response.ProjectResponse;
 import huan.backend.dto.response.UserResponse;
-
+import huan.backend.entity.Member;
+import huan.backend.entity.Project;
 import huan.backend.entity.User;
 import huan.backend.enumerate.ErrorCode;
 import huan.backend.enumerate.Role;
 import huan.backend.exception.AppException;
+import huan.backend.mapper.ProjectMapper;
 import huan.backend.mapper.UserMapper;
+import huan.backend.repository.MemberRepository;
 import huan.backend.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -34,6 +39,8 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
+    private final MemberRepository memberRepository;
+    private final ProjectMapper projectMapper;
 
     public UserResponse addAccount(UserRequest accountRequest){
         
@@ -84,4 +91,25 @@ public class UserService {
                 .message("Xóa người dùng thành công")
                 .build();
     }
+    public PageResponse<ProjectResponse> getProjectsByUserId(Long userId, int page, int size) {
+    Pageable pageable = PageRequest.of(page - 1, size);
+    
+
+    Page<Member> memberPage = memberRepository.findByUserIdAndIsActiveTrue(userId, pageable);
+
+    List<ProjectResponse> responseList = memberPage.getContent().stream()
+            .map(Member::getProject) 
+            .filter(Project::getIsActive) 
+            .map(projectMapper::toResponse)
+            .collect(Collectors.toList());
+
+    return PageResponse.<ProjectResponse>builder()
+            .currentPage(page)
+            .pageSize(memberPage.getSize())
+            .totalPages(memberPage.getTotalPages())
+            .totalElements(memberPage.getTotalElements())
+            .data(responseList)
+            .build();
+}
+    
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import huan.backend.dto.response.ApiResponse;
 import huan.backend.dto.response.PageResponse;
+import huan.backend.dto.response.ProjectResponse;
 import huan.backend.dto.response.UserResponse;
 import huan.backend.service.UserService;
 import jakarta.validation.Valid;
@@ -27,6 +28,12 @@ public class UserController {
     @GetMapping("/profile")
     public ResponseEntity<UserResponse> getUser(){
         return ResponseEntity.ok(userService.getAccount());
+    }
+
+    @GetMapping("/{id}")
+    public  ResponseEntity<PageResponse<ProjectResponse>> getProjectById(@PathVariable Long id, @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size){
+        return ResponseEntity.ok(userService.getProjectsByUserId(id, page, size));
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")

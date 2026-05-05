@@ -4,8 +4,7 @@ import huan.backend.dto.request.MemberRequest;
 import huan.backend.dto.response.ApiResponse;
 import huan.backend.dto.response.MemberProjectResponse; 
 import huan.backend.dto.response.MemberResponse;
-import huan.backend.dto.response.PageResponse;
-import huan.backend.dto.response.ProjectResponse;
+
 import huan.backend.entity.Member;
 import huan.backend.entity.Project;
 import huan.backend.entity.User;
@@ -13,15 +12,12 @@ import huan.backend.enumerate.ErrorCode;
 import huan.backend.enumerate.ProjectRole;
 import huan.backend.exception.AppException;
 import huan.backend.mapper.MemberMapper;
-import huan.backend.mapper.ProjectMapper;
 import huan.backend.repository.MemberRepository;
 import huan.backend.repository.ProjectRepository;
 import huan.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,7 +33,6 @@ public class MemberService {
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
     private final MemberMapper memberMapper;
-    private final ProjectMapper projectMapper;
 
     @Transactional
     public MemberResponse addMember(MemberRequest request) {
@@ -72,7 +67,6 @@ public class MemberService {
                 .map(memberMapper::toResponse)
                 .collect(Collectors.toList());
 
-        // 4. Build và trả về MemberProjectResponse
         return MemberProjectResponse.builder()
                 .name(project.getName())
                 .memberResponses(responseList)
@@ -80,27 +74,8 @@ public class MemberService {
     }
 
 
-    public PageResponse<ProjectResponse> getProjectsByUserId(Long userId, int page, int size) {
-    Pageable pageable = PageRequest.of(page - 1, size);
-    
 
-    Page<Member> memberPage = memberRepository.findByUserIdAndIsActiveTrue(userId, pageable);
 
-    List<ProjectResponse> responseList = memberPage.getContent().stream()
-            .map(Member::getProject) 
-            .filter(Project::getIsActive) 
-            .map(projectMapper::toResponse)
-            .collect(Collectors.toList());
-
-    return PageResponse.<ProjectResponse>builder()
-            .currentPage(page)
-            .pageSize(memberPage.getSize())
-            .totalPages(memberPage.getTotalPages())
-            .totalElements(memberPage.getTotalElements())
-            .data(responseList)
-            .build();
-}
-    @Transactional
     public ApiResponse removeMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(()->  new AppException(ErrorCode.MEMBER_NOT_FOUND));
         

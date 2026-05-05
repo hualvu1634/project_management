@@ -17,7 +17,6 @@ import huan.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -30,7 +29,7 @@ public class ProjectService {
     private final ProjectMapper projectMapper;
     private final MemberRepository memberRepository;
 
-    @Transactional
+
     public ProjectResponse createProject(ProjectRequest request) {
         User owner = userRepository.findById(request.getOwnerId())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
@@ -47,7 +46,7 @@ public class ProjectService {
     }
 
 
-    @Transactional
+
     public ProjectResponse updateProject(Long id, ProjectRequest request) {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.PROJECT_NOT_FOUND));
@@ -58,7 +57,6 @@ public class ProjectService {
         return projectMapper.toResponse(projectRepository.save(project));
     }
 
-    @Transactional
     public ApiResponse deleteProject(Long id) {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.PROJECT_NOT_FOUND));
