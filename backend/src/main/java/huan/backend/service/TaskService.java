@@ -7,6 +7,7 @@ import huan.backend.dto.response.TaskResponse;
 import huan.backend.entity.Member;
 import huan.backend.entity.Project;
 import huan.backend.entity.Task;
+import huan.backend.entity.TaskLog;
 import huan.backend.entity.User;
 import huan.backend.enumerate.ErrorCode;
 import huan.backend.enumerate.ProjectRole;
@@ -15,6 +16,7 @@ import huan.backend.exception.AppException;
 import huan.backend.mapper.TaskMapper;
 import huan.backend.repository.MemberRepository;
 import huan.backend.repository.ProjectRepository;
+import huan.backend.repository.TaskLogRepository;
 import huan.backend.repository.TaskRepository;
 import huan.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +39,7 @@ public class TaskService {
     private final UserRepository userRepository;
     private final MemberRepository memberRepository;
     private final TaskMapper taskMapper;
+    private final TaskLogRepository taskLogRepository;
 
     @Transactional
     public TaskResponse createTask(TaskRequest request) {
@@ -47,31 +50,32 @@ public class TaskService {
         task.setStatus(TaskStatus.TODO);
         task.setProject(project);
 
-        if (request.getAssigneeId() != null) {
-            boolean isMember = memberRepository.existsByProjectIdAndUserIdAndIsActiveTrue(
-                    project.getId(), 
-                    request.getAssigneeId()
-            );
-            
-            if (!isMember) {
-                throw new AppException(ErrorCode.ASSIGNEE_NOT_IN_PROJECT);
-            }
-            
             User assignee = userRepository.findById(request.getAssigneeId())
                     .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
             task.setAssignee(assignee);
-        }
+        
+        Task savedTask = taskRepository.save(task);
 
-        return taskMapper.toResponse(taskRepository.save(task));
+        
+        TaskLog log = TaskLog.builder()
+                .task(savedTask)
+                .user(assignee) 
+                .status(TaskStatus.TODO) 
+                .build();
+        taskLogRepository.save(log);
+
+        TaskResponse response = taskMapper.toResponse(savedTask);
+
+        return response;
     }
     
     @Transactional
-public TaskResponse updateTaskStatus(Long taskId, TaskStatusRequest request) {
+public TaskResponse updateTaskStatus( TaskStatusRequest request) {
     
-    Task task = taskRepository.findById(taskId)
+    Task task = taskRepository.findById(request.getTaskId())
             .orElseThrow(() -> new AppException(ErrorCode.TASK_NOT_FOUND));
             
-    Member currentMember = memberRepository.findById(request.getCurrentUserId()).orElseThrow(()-> new AppException(ErrorCode.MEMBER_NOT_FOUND));
+    Member currentMember = memberRepository.findById(request.getUserId()).orElseThrow(()-> new AppException(ErrorCode.MEMBER_NOT_FOUND));
 
     ProjectRole role = currentMember.getProjectRole();
     Long assigneeId = task.getAssignee() != null ? task.getAssignee().getId() : null;
@@ -83,7 +87,7 @@ public TaskResponse updateTaskStatus(Long taskId, TaskStatusRequest request) {
             }
         } 
         else if (request.getStatus() == TaskStatus.IN_PROGRESS || request.getStatus() == TaskStatus.IN_REVIEW) {
-            if (assigneeId == null || !assigneeId.equals(request.getCurrentUserId())) {
+            if (assigneeId == null || !assigneeId.equals(request.getUserId())) {
                 throw new AppException(ErrorCode.UNAUTHORIZED); 
             }
         }

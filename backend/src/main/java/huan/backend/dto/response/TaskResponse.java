@@ -9,7 +9,6 @@ import lombok.Setter;
 @Setter
 @Builder
 public class TaskResponse {
-
     private String title;
     private TaskStatus status;
     private String assigneeName; 
