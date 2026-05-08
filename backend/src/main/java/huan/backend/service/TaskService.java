@@ -75,7 +75,7 @@ public TaskResponse updateTaskStatus( TaskStatusRequest request) {
     Task task = taskRepository.findById(request.getTaskId())
             .orElseThrow(() -> new AppException(ErrorCode.TASK_NOT_FOUND));
             
-    Member currentMember = memberRepository.findById(request.getUserId()).orElseThrow(()-> new AppException(ErrorCode.MEMBER_NOT_FOUND));
+    Member currentMember = memberRepository.findByUserId(request.getUserId()).orElseThrow(()-> new AppException(ErrorCode.MEMBER_NOT_FOUND));
 
     ProjectRole role = currentMember.getProjectRole();
     Long assigneeId = task.getAssignee() != null ? task.getAssignee().getId() : null;
@@ -92,7 +92,15 @@ public TaskResponse updateTaskStatus( TaskStatusRequest request) {
             }
         }
     }
-
+    
+        User assignee = userRepository.findById(request.getUserId())
+                    .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+     TaskLog log = TaskLog.builder()
+                .task(task)
+                .user(assignee) 
+                .status(request.getStatus()) 
+                .build();
+        taskLogRepository.save(log);
     task.setStatus(request.getStatus());
     return taskMapper.toResponse(taskRepository.save(task));
 }
