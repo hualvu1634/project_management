@@ -12,7 +12,7 @@ import huan.backend.entity.Project;
 import huan.backend.entity.Task;
 import huan.backend.entity.User;
 import huan.backend.enumerate.ErrorCode;
-
+import huan.backend.enumerate.ProjectRole;
 import huan.backend.exception.AppException;
 import huan.backend.mapper.MemberMapper;
 import huan.backend.mapper.ProjectMapper;
@@ -53,6 +53,7 @@ public class ProjectService {
         project.setOwner(owner);
         Project save = projectRepository.save(project);
         Member pmMember = Member.builder()
+        .projectRole(ProjectRole.PROJECT_MANAGER)
                 .project(save)
                 .user(owner)
                 .isActive(true)

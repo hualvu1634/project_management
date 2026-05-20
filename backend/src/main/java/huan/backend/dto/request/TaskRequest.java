@@ -1,6 +1,7 @@
 package huan.backend.dto.request;
 
 
+import huan.backend.enumerate.Priority;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,5 +10,6 @@ import lombok.Setter;
 public class TaskRequest {
     private Long projectId;
     private String title;
+      private Priority priority;
     private Long assigneeId;
 }

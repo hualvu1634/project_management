@@ -1,6 +1,7 @@
 package huan.backend.entity;
 
 
+import huan.backend.enumerate.Priority;
 import huan.backend.enumerate.TaskStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -39,7 +40,8 @@ public class Task {
 
     @Column(nullable = false, length = 200)
     private String title;
-
+    @Column(nullable = false)
+    private Priority priority;
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private TaskStatus status;
