@@ -10,6 +10,6 @@ import lombok.Setter;
 public class TaskRequest {
     private Long projectId;
     private String title;
-      private Priority priority;
+    private Priority priority;
     private Long assigneeId;
 }

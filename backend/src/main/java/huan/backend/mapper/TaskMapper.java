@@ -17,5 +17,6 @@ public interface TaskMapper {
     @Mapping(target = "project", ignore = true)  
     @Mapping(target = "assignee", ignore = true) 
     @Mapping(target = "status",ignore = true)
+    @Mapping(target = "createDate",ignore = true)
     Task toEntity(TaskRequest request);
 }

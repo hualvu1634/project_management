@@ -1,6 +1,8 @@
 package huan.backend.entity;
 
 
+import java.time.LocalDate;
+
 import huan.backend.enumerate.Priority;
 import huan.backend.enumerate.TaskStatus;
 import jakarta.persistence.Column;
@@ -45,7 +47,8 @@ public class Task {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private TaskStatus status;
-
+    @Column(name = "create_date", nullable = false)
+    private LocalDate createDate;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assignee_id")
     private User assignee;

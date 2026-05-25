@@ -27,6 +27,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,6 +48,7 @@ public class TaskService {
                 .orElseThrow(() -> new AppException(ErrorCode.PROJECT_NOT_FOUND));
 
         Task task = taskMapper.toEntity(request);
+        task.setCreateDate(LocalDate.now());
         task.setStatus(TaskStatus.TODO);
         task.setProject(project);
 
@@ -61,6 +63,7 @@ public class TaskService {
                 .task(savedTask)
                 .user(assignee) 
                 .status(TaskStatus.TODO) 
+                .createdAt(LocalDate.now())
                 .build();
         taskLogRepository.save(log);
 

@@ -1,5 +1,7 @@
 package huan.backend.dto.response;
 
+import java.time.LocalDate;
+
 import huan.backend.enumerate.Priority;
 import huan.backend.enumerate.TaskStatus;
 import lombok.Builder;
@@ -14,4 +16,5 @@ public class TaskResponse {
     private TaskStatus status;
     private Priority priority;
     private String assigneeName; 
+    private LocalDate createDate;
 }
