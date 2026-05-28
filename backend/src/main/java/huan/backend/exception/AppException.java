@@ -1,6 +1,6 @@
 package huan.backend.exception;
 
-import huan.backend.enumerate.ErrorCode;
+import huan.backend.enums.ErrorCode;
 import lombok.Getter;
 
 @Getter

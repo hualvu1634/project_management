@@ -1,7 +1,7 @@
 package huan.backend.dto.request;
 
 
-import huan.backend.enumerate.Priority;
+import huan.backend.enums.Priority;
 import lombok.Getter;
 import lombok.Setter;
 

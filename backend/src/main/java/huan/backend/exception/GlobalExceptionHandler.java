@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import huan.backend.dto.response.ApiResponse;
-import huan.backend.enumerate.ErrorCode;
+import huan.backend.enums.ErrorCode;
 
 import java.time.LocalDateTime;
 import java.util.List;

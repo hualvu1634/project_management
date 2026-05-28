@@ -18,12 +18,12 @@ import org.springframework.web.bind.annotation.*;
 public class ProjectController {
 
     private final ProjectService projectService;
-
+    //thêm dự án 
     @PostMapping
     public ResponseEntity<ProjectResponse> createProject(@RequestBody ProjectRequest request) {
         return new ResponseEntity<>(projectService.createProject(request), HttpStatus.CREATED);
     }
-
+    //xem các task có trong dự án
     @GetMapping("/{id}")
       public ResponseEntity<PageResponse<TaskResponse>> getTasksByProject(
             @PathVariable Long id,
@@ -32,6 +32,7 @@ public class ProjectController {
     ) {
         return ResponseEntity.ok(projectService.getTasksByProject(id, page, size));
     }
+    //xem thành viên trong dự án 
     @GetMapping("/{id}/members")
         public ResponseEntity<MemberProjectResponse> getMembersByProject(
             @PathVariable Long projectId,
@@ -41,14 +42,14 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.getMembersByProject(projectId, page, size));
     }
 
-
+    //Sửa dự án 
     @PutMapping("/{id}")
     public ResponseEntity<ProjectResponse> updateProject(
             @PathVariable Long id, 
             @RequestBody ProjectRequest request) {
         return ResponseEntity.ok(projectService.updateProject(id, request));
     }
-
+    //xóa dự án
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse> deleteProject(@PathVariable Long id) {
         return ResponseEntity.ok(projectService.deleteProject(id));

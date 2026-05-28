@@ -2,7 +2,7 @@ package huan.backend.dto.response;
 
 import java.time.LocalDateTime;
 
-import huan.backend.enumerate.Role;
+import huan.backend.enums.Role;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

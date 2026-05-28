@@ -1,6 +1,6 @@
 package huan.backend.entity;
 
-import huan.backend.enumerate.ProjectRole;
+import huan.backend.enums.ProjectRole;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

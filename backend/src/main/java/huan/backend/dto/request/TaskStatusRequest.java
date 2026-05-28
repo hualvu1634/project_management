@@ -1,6 +1,6 @@
 package huan.backend.dto.request;
 
-import huan.backend.enumerate.TaskStatus;
+import huan.backend.enums.TaskStatus;
 import lombok.Getter;
 import lombok.Setter;
 

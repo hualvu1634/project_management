@@ -2,8 +2,8 @@ package huan.backend.dto.response;
 
 import java.time.LocalDate;
 
-import huan.backend.enumerate.Priority;
-import huan.backend.enumerate.TaskStatus;
+import huan.backend.enums.Priority;
+import huan.backend.enums.TaskStatus;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

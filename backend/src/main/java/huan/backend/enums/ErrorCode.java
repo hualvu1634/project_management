@@ -1,4 +1,4 @@
-package huan.backend.enumerate;
+package huan.backend.enums;
 
 import lombok.Getter;
 

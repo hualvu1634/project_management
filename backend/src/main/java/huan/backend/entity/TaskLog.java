@@ -1,6 +1,5 @@
 package huan.backend.entity;
 
-import huan.backend.enumerate.TaskStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -19,6 +18,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+
+import huan.backend.enums.TaskStatus;
 
 @Entity
 @Table(name = "task_logs")

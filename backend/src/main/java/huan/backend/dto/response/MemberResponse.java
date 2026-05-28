@@ -1,6 +1,6 @@
 package huan.backend.dto.response;
 
-import huan.backend.enumerate.ProjectRole;
+import huan.backend.enums.ProjectRole;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

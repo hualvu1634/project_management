@@ -3,8 +3,8 @@ package huan.backend.entity;
 
 import java.time.LocalDate;
 
-import huan.backend.enumerate.Priority;
-import huan.backend.enumerate.TaskStatus;
+import huan.backend.enums.Priority;
+import huan.backend.enums.TaskStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -43,6 +43,7 @@ public class Task {
     @Column(nullable = false, length = 200)
     private String title;
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Priority priority;
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
