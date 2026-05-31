@@ -1,6 +1,5 @@
 package huan.backend.service;
 
-import java.time.LocalDateTime;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,7 +35,6 @@ public class AuthenticationService {
             .id(user.getId())
                     .accessToken(accessToken)
                     .refreshToken(refreshToken)
-                    .issuedAt(LocalDateTime.now())
                     .role(user.getRole())
                     .build();
         }

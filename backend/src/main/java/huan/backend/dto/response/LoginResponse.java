@@ -1,6 +1,5 @@
 package huan.backend.dto.response;
 
-import java.time.LocalDateTime;
 
 import huan.backend.enums.Role;
 import lombok.Builder;
@@ -14,6 +13,5 @@ public class LoginResponse {
     private Long id;
     private String accessToken;
     private String refreshToken;
-    private LocalDateTime issuedAt;
     private Role role;
 }
