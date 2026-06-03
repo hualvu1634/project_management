@@ -1,6 +1,6 @@
 
 
-CREATE TABLE users (
+CREATE TABLE  IF NOT EXISTS  users (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
@@ -10,7 +10,7 @@ CREATE TABLE users (
     is_active BOOLEAN NOT NULL DEFAULT TRUE
 );
 
-CREATE TABLE projects (
+CREATE TABLE  IF NOT EXISTS  projects (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     description TEXT,
@@ -20,7 +20,7 @@ CREATE TABLE projects (
     CONSTRAINT fk_projects_users FOREIGN KEY (users_id) REFERENCES users(id)
 );
 
-CREATE TABLE members (
+CREATE TABLE IF NOT EXISTS members (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     project_id BIGINT NOT NULL,
     user_id BIGINT NOT NULL,
@@ -30,7 +30,7 @@ CREATE TABLE members (
     CONSTRAINT fk_members_users FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
-CREATE TABLE tasks (
+CREATE TABLE IF NOT EXISTS tasks (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     project_id BIGINT NOT NULL,
     title VARCHAR(200) NOT NULL,
@@ -42,7 +42,7 @@ CREATE TABLE tasks (
     CONSTRAINT fk_tasks_users FOREIGN KEY (assignee_id) REFERENCES users(id)
 );
 
-CREATE TABLE task_logs (
+CREATE TABLE IF NOT EXISTS task_logs (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     task_id BIGINT NOT NULL,
     user_id BIGINT NOT NULL,
