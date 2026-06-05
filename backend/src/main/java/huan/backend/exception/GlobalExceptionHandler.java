@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import huan.backend.dto.response.ApiResponse;
 import huan.backend.enums.ErrorCode;
 
-import java.time.LocalDateTime;
+
 import java.util.List;
 
 @ControllerAdvice
@@ -20,7 +20,6 @@ public class GlobalExceptionHandler {
 
     private ResponseEntity<ApiResponse> buildErrorResponse(String message, int code, List<ErrorField> details) {
         ApiResponse response = ApiResponse.builder()
-                .timestamp(LocalDateTime.now())
                 .message(message)
                 .code(code)
                 .details(details) 

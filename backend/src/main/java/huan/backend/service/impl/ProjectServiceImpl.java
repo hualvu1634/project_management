@@ -29,7 +29,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,15 +46,15 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectResponse createProject(ProjectRequest request) {
-        User owner = userRepository.findById(request.getOwnerId())
+        User user = userRepository.findById(request.getOwnerId())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         Project project = projectMapper.toEntity(request);
-        project.setOwner(owner);
+        project.setUser(user);
         Project save = projectRepository.save(project);
         Member pmMember = Member.builder()
                 .projectRole(ProjectRole.PROJECT_MANAGER)
                 .project(save)
-                .user(owner)
+                .user(user)
                 .isActive(true)
                 .build();
         memberRepository.save(pmMember);
@@ -114,7 +113,7 @@ public class ProjectServiceImpl implements ProjectService {
                 .orElseThrow(() -> new AppException(ErrorCode.PROJECT_NOT_FOUND));
         project.setIsActive(false);
         projectRepository.save(project);
-        return ApiResponse.builder().timestamp(LocalDateTime.now())
+        return ApiResponse.builder()
                 .code(200)
                 .message("Xóa dự án thành công")
                 .build();

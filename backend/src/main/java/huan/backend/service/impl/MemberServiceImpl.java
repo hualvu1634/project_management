@@ -17,7 +17,6 @@ import huan.backend.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -61,7 +60,7 @@ public class MemberServiceImpl implements MemberService {
             project.setTeamsize(project.getTeamsize() - 1);
             projectRepository.save(project);
         }
-        return ApiResponse.builder().timestamp(LocalDateTime.now())
+        return ApiResponse.builder()
                 .code(200)
                 .message("Xóa thành viên thành công")
                 .build();

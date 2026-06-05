@@ -13,7 +13,7 @@ public interface ProjectMapper {
 
   
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "owner", ignore = true) 
+    @Mapping(target = "user", ignore = true) 
     @Mapping(target = "isActive", constant = "true") 
     @Mapping(target = "teamsize", constant = "1")  
     Project toEntity(ProjectRequest request);

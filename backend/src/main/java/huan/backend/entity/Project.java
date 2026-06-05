@@ -36,7 +36,7 @@ public class Project {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "users_id", nullable = false)
-    private User owner;
+    private User user;
 
     @Column(nullable = false)
     @Builder.Default

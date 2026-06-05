@@ -25,7 +25,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -83,7 +82,7 @@ public class UserServiceImpl implements UserService {
         user.setIsActive(false); 
         userRepository.save(user); 
         return ApiResponse.builder()
-                .timestamp(LocalDateTime.now())
+               
                 .code(200)
                 .message("Xóa người dùng thành công")
                 .build();
