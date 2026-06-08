@@ -1,7 +1,7 @@
 package huan.backend.service.impl;
 
 import huan.backend.dto.request.TaskRequest;
-import huan.backend.dto.request.TaskStatusRequest;
+import huan.backend.dto.request.StatusRequest;
 import huan.backend.dto.response.PageResponse;
 import huan.backend.dto.response.TaskResponse;
 import huan.backend.entity.Member;
@@ -73,7 +73,7 @@ public class TaskServiceImpl implements TaskService {
     
     @Override
     @Transactional
-    public TaskResponse updateTaskStatus(TaskStatusRequest request) {
+    public TaskResponse updateTaskStatus(StatusRequest request) {
         Task task = taskRepository.findById(request.getTaskId())
                 .orElseThrow(() -> new AppException(ErrorCode.TASK_NOT_FOUND));
                 
@@ -84,7 +84,7 @@ public class TaskServiceImpl implements TaskService {
 
         if (role != ProjectRole.PROJECT_MANAGER) { 
             if (request.getStatus() == TaskStatus.DONE) {
-                if (role != ProjectRole.TESTER) {
+                if (role != ProjectRole.MEMBER) {
                     throw new AppException(ErrorCode.UNAUTHORIZED); 
                 }
             } 

@@ -41,7 +41,7 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberMapper.toEntity(request);
         member.setProject(project);
         member.setUser(user);
-        member.setProjectRole(ProjectRole.DEVELOPER);
+        member.setProjectRole(ProjectRole.MEMBER);
         project.setTeamsize(project.getTeamsize() + 1);
         projectRepository.save(project);
 

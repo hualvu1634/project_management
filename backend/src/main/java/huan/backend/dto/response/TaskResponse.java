@@ -17,4 +17,5 @@ public class TaskResponse {
     private Priority priority;
     private String assigneeName; 
     private LocalDate createDate;
+    private String description;
 }

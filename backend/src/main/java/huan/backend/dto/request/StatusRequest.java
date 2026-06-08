@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class TaskStatusRequest {
+public class StatusRequest {
     private Long taskId;
     private TaskStatus status;
     private Long userId;

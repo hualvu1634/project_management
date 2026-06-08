@@ -1,7 +1,7 @@
 package huan.backend.controller;
 
 import huan.backend.dto.request.TaskRequest;
-import huan.backend.dto.request.TaskStatusRequest;
+import huan.backend.dto.request.StatusRequest;
 
 import huan.backend.dto.response.TaskResponse;
 
@@ -24,7 +24,7 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TaskResponse> updateTaskStatus(    @RequestBody TaskStatusRequest taskStatusRequest) { 
+    public ResponseEntity<TaskResponse> updateTaskStatus(    @RequestBody StatusRequest taskStatusRequest) { 
         return ResponseEntity.ok(taskService.updateTaskStatus(taskStatusRequest));
     }
 }
