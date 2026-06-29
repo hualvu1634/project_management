@@ -15,9 +15,7 @@ public class EmailService {
 
 
     private final JavaMailSender javaMailSender;
-
-
-    @Value("$(spring.mail.username)")
+    @Value("${spring.mail.username}")
     private String fromMail;
     public  void sendEmail(MailResponse mailResponse){
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();

@@ -49,8 +49,9 @@ public class MemberServiceImpl implements MemberService {
         projectRepository.save(project);
         memberRepository.save(member);
         
-        MailResponse mailResponse = MailResponse.builder().to(user.getEmail())
-                                    .subject("Chúc mừng")
+        MailResponse mailResponse = MailResponse.builder()
+                                .to(user.getEmail())
+                                .subject("Chúc mừng")
                                 .text("Bạn đã  tham gia vào dự án " + project.getName()).build();
                                 
         emailService.sendEmail(mailResponse);
