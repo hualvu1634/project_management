@@ -1,6 +1,6 @@
 package huan.backend.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,13 +16,15 @@ import huan.backend.dto.response.ProjectResponse;
 import huan.backend.dto.response.UserResponse;
 import huan.backend.service.UserService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/users")
+@RequiredArgsConstructor
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+
+    private final UserService userService;
 
     @PreAuthorize("hasAuthority('USER')")
     @GetMapping("/profile")

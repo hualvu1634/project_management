@@ -2,7 +2,8 @@ package huan.backend.service.impl;
 
 import huan.backend.dto.request.MemberRequest;
 import huan.backend.dto.response.ApiResponse;
-import huan.backend.dto.response.MemberResponse;
+import huan.backend.dto.response.MailResponse;
+
 import huan.backend.entity.Member;
 import huan.backend.entity.Project;
 import huan.backend.entity.User;
@@ -13,6 +14,7 @@ import huan.backend.mapper.MemberMapper;
 import huan.backend.repository.MemberRepository;
 import huan.backend.repository.ProjectRepository;
 import huan.backend.repository.UserRepository;
+import huan.backend.service.EmailService;
 import huan.backend.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,14 +23,14 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
-
+    private final EmailService emailService;
     private final MemberRepository memberRepository;
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
     private final MemberMapper memberMapper;
 
     @Override
-    public MemberResponse addMember(MemberRequest request) {
+    public MailResponse addMember(MemberRequest request) {
         Project project = projectRepository.findById(request.getProjectId())
                 .orElseThrow(() -> new AppException(ErrorCode.PROJECT_NOT_FOUND));
         User user = userRepository.findByEmail(request.getEmail())
@@ -38,14 +40,22 @@ public class MemberServiceImpl implements MemberService {
             throw new AppException(ErrorCode.MEMBER_EXISTED);
         }
 
+
         Member member = memberMapper.toEntity(request);
         member.setProject(project);
         member.setUser(user);
         member.setProjectRole(ProjectRole.MEMBER);
         project.setTeamsize(project.getTeamsize() + 1);
         projectRepository.save(project);
-
-        return memberMapper.toResponse(memberRepository.save(member));
+        memberRepository.save(member);
+        
+        MailResponse mailResponse = MailResponse.builder().to(user.getEmail())
+                                    .subject("Chúc mừng")
+                                .text("Bạn đã  tham gia vào dự án " + project.getName()).build();
+                                
+        emailService.sendEmail(mailResponse);
+        return mailResponse;
+   
     }
 
     @Override

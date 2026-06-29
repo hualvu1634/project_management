@@ -2,7 +2,7 @@ package huan.backend.controller;
 
 import huan.backend.dto.request.MemberRequest;
 import huan.backend.dto.response.ApiResponse;
-
+import huan.backend.dto.response.MailResponse;
 import huan.backend.dto.response.MemberResponse;
 
 import huan.backend.service.MemberService;
@@ -19,7 +19,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping
-    public ResponseEntity<MemberResponse> addMember(@RequestBody MemberRequest request) {
+    public ResponseEntity<MailResponse> addMember(@RequestBody MemberRequest request) {
         return new ResponseEntity<>(memberService.addMember(request), HttpStatus.CREATED);
     }
     
