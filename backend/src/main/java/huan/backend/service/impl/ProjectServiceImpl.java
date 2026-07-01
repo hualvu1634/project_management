@@ -2,7 +2,7 @@ package huan.backend.service.impl;
 
 import huan.backend.dto.request.ProjectRequest;
 import huan.backend.dto.response.ApiResponse;
-import huan.backend.dto.response.MemberProjectResponse;
+
 import huan.backend.dto.response.MemberResponse;
 import huan.backend.dto.response.PageResponse;
 import huan.backend.dto.response.ProjectResponse;
@@ -62,20 +62,24 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public MemberProjectResponse getMembersByProject(Long id, int page, int size) {
+    public PageResponse<MemberResponse> getMembersByProject(Long id, int page, int size) {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.PROJECT_NOT_FOUND));
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by("id").ascending());
+        Page<Member> pageData = memberRepository.findByProjectIdAndIsActiveTrue(id, pageable);
 
-        List<Member> pageData = memberRepository.findByProjectIdAndIsActiveTrue(id);
-
-        List<MemberResponse> responseList = pageData.stream()
+        List<MemberResponse> responseList = pageData.getContent().stream()
                 .map(memberMapper::toResponse)
                 .collect(Collectors.toList());
 
-        return MemberProjectResponse.builder()
-                .name(project.getName())
-                .memberResponses(responseList)
+        return PageResponse.<MemberResponse>builder()
+                .currentPage(page)
+                .pageSize(pageData.getSize())
+                .totalPages(pageData.getTotalPages())
+                .totalElements(pageData.getTotalElements())
+                .data(responseList)
                 .build();
+     
     }
 
     @Override

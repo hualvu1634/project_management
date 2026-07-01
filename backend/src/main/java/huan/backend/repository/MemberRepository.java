@@ -1,7 +1,6 @@
 package huan.backend.repository;
 
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -15,7 +14,7 @@ import huan.backend.entity.Member;
 public interface MemberRepository  extends JpaRepository<Member,Long>{
 
     boolean existsByProjectIdAndUserIdAndIsActiveTrue(Long id, Long id2);
-      List<Member> findByProjectIdAndIsActiveTrue(Long projectId);
+      Page<Member> findByProjectIdAndIsActiveTrue(Long projectId,Pageable pageable);
     Page<Member> findByUserIdAndIsActiveTrue(Long userId, Pageable pageable);
     Optional<Member> findByUserId(Long userId);
     

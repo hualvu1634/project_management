@@ -2,7 +2,7 @@ package huan.backend.controller;
 
 import huan.backend.dto.request.ProjectRequest;
 import huan.backend.dto.response.ApiResponse;
-import huan.backend.dto.response.MemberProjectResponse;
+import huan.backend.dto.response.MemberResponse;
 import huan.backend.dto.response.PageResponse;
 import huan.backend.dto.response.ProjectResponse;
 import huan.backend.dto.response.TaskResponse;
@@ -26,7 +26,7 @@ public class ProjectController {
     //xem các task có trong dự án
     @GetMapping("/{id}")
       public ResponseEntity<PageResponse<TaskResponse>> getTasksByProject(
-            @PathVariable Long id,
+            @PathVariable("id") Long id,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
@@ -34,12 +34,12 @@ public class ProjectController {
     }
     //xem thành viên trong dự án 
     @GetMapping("/{id}/members")
-        public ResponseEntity<MemberProjectResponse> getMembersByProject(
-            @PathVariable Long projectId,
+        public ResponseEntity<PageResponse<MemberResponse>> getMembersByProject(
+            @PathVariable Long id,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        return ResponseEntity.ok(projectService.getMembersByProject(projectId, page, size));
+        return ResponseEntity.ok(projectService.getMembersByProject(id, page, size));
     }
 
     //Sửa dự án 
