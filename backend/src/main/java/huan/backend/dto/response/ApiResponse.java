@@ -14,7 +14,6 @@ import lombok.Setter;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiResponse {
-    private Integer code;
     private String message;
     private List<ErrorField> details;
 }

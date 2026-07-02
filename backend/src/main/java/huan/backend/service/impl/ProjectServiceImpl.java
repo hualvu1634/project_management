@@ -118,7 +118,7 @@ public class ProjectServiceImpl implements ProjectService {
         project.setIsActive(false);
         projectRepository.save(project);
         return ApiResponse.builder()
-                .code(200)
+                
                 .message("Xóa dự án thành công")
                 .build();
     }

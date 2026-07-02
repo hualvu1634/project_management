@@ -82,8 +82,6 @@ public class UserServiceImpl implements UserService {
         user.setIsActive(false); 
         userRepository.save(user); 
         return ApiResponse.builder()
-               
-                .code(200)
                 .message("Xóa người dùng thành công")
                 .build();
     }

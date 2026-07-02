@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
     private ResponseEntity<ApiResponse> buildErrorResponse(String message, int code, List<ErrorField> details) {
         ApiResponse response = ApiResponse.builder()
                 .message(message)
-                .code(code)
+                
                 .details(details) 
                 .build();
         

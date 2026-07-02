@@ -72,7 +72,6 @@ public class MemberServiceImpl implements MemberService {
             projectRepository.save(project);
         }
         return ApiResponse.builder()
-                .code(200)
                 .message("Xóa thành viên thành công")
                 .build();
     }
