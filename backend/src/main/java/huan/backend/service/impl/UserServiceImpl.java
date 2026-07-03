@@ -1,7 +1,6 @@
 package huan.backend.service.impl;
 
 import huan.backend.dto.request.UserRequest;
-import huan.backend.dto.response.ApiResponse;
 import huan.backend.dto.response.PageResponse;
 import huan.backend.dto.response.ProjectResponse;
 import huan.backend.dto.response.UserResponse;
@@ -77,20 +76,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ApiResponse deleteAccount(Long id) {
+    public void deleteAccount(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         user.setIsActive(false); 
         userRepository.save(user); 
-        return ApiResponse.builder()
-                .message("Xóa người dùng thành công")
-                .build();
+      
     }
     
     @Override
     public PageResponse<ProjectResponse> getProjectsByUserId(Long userId, int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size);
         
-        Page<Member> memberPage = memberRepository.findByUserIdAndIsActiveTrue(userId, pageable);
+        Page<Member> memberPage = memberRepository.findActiveByUser(userId, pageable);
 
         List<ProjectResponse> responseList = memberPage.getContent().stream()
                 .map(Member::getProject) 

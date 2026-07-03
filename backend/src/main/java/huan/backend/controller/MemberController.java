@@ -1,9 +1,7 @@
 package huan.backend.controller;
 
 import huan.backend.dto.request.MemberRequest;
-import huan.backend.dto.response.ApiResponse;
 import huan.backend.dto.response.MailResponse;
-import huan.backend.dto.response.MemberResponse;
 
 import huan.backend.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +24,8 @@ public class MemberController {
 
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse> removeMember(@PathVariable Long id) {
-        return ResponseEntity.ok(memberService.removeMember(id));
+    public ResponseEntity<String> removeMember(@PathVariable Long id) {
+    memberService.removeMember(id);
+    return ResponseEntity.ok("Xoa thanh cong");
     }
 }

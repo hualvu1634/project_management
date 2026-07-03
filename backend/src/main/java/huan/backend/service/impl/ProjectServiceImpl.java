@@ -1,7 +1,6 @@
 package huan.backend.service.impl;
 
 import huan.backend.dto.request.ProjectRequest;
-import huan.backend.dto.response.ApiResponse;
 
 import huan.backend.dto.response.MemberResponse;
 import huan.backend.dto.response.PageResponse;
@@ -66,7 +65,7 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.PROJECT_NOT_FOUND));
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by("id").ascending());
-        Page<Member> pageData = memberRepository.findByProjectIdAndIsActiveTrue(id, pageable);
+        Page<Member> pageData = memberRepository.findActiveByProject(id, pageable);
 
         List<MemberResponse> responseList = pageData.getContent().stream()
                 .map(memberMapper::toResponse)
@@ -85,7 +84,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public PageResponse<TaskResponse> getTasksByProject(Long id, int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by("id").ascending());
-        Page<Task> pageData = taskRepository.findByProjectId(id, pageable);
+        Page<Task> pageData = taskRepository.findTasksByProject(id, pageable);
 
         List<TaskResponse> responseList = pageData.getContent().stream()
                 .map(taskMapper::toResponse)
@@ -112,14 +111,11 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ApiResponse deleteProject(Long id) {
+    public void deleteProject(Long id) {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.PROJECT_NOT_FOUND));
         project.setIsActive(false);
         projectRepository.save(project);
-        return ApiResponse.builder()
-                
-                .message("Xóa dự án thành công")
-                .build();
+       
     }
 }

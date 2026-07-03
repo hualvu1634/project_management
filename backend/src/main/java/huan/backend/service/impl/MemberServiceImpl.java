@@ -1,7 +1,6 @@
 package huan.backend.service.impl;
 
 import huan.backend.dto.request.MemberRequest;
-import huan.backend.dto.response.ApiResponse;
 import huan.backend.dto.response.MailResponse;
 
 import huan.backend.entity.Member;
@@ -36,7 +35,7 @@ public class MemberServiceImpl implements MemberService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
-        if (memberRepository.existsByProjectIdAndUserIdAndIsActiveTrue(project.getId(), user.getId())) {
+        if (memberRepository.checkActiveMember(project.getId(), user.getId())) {
             throw new AppException(ErrorCode.MEMBER_EXISTED);
         }
 
@@ -60,7 +59,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public ApiResponse removeMember(Long id) {
+    public void removeMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(()->  new AppException(ErrorCode.MEMBER_NOT_FOUND));
         
         member.setIsActive(false);
@@ -71,8 +70,6 @@ public class MemberServiceImpl implements MemberService {
             project.setTeamsize(project.getTeamsize() - 1);
             projectRepository.save(project);
         }
-        return ApiResponse.builder()
-                .message("Xóa thành viên thành công")
-                .build();
+
     }
 }

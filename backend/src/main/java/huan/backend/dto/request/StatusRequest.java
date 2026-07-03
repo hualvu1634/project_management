@@ -9,5 +9,5 @@ import lombok.Setter;
 public class StatusRequest {
     private Long taskId;
     private TaskStatus status;
-    private Long userId;
+    private Long id;
 }

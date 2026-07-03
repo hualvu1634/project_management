@@ -49,7 +49,7 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse> delAccount(@Valid @PathVariable("id") Long id){
-        return ResponseEntity.ok(userService.deleteAccount(id));
-    }
+    public ResponseEntity<String> delAccount(@Valid @PathVariable("id") Long id){
+        userService.deleteAccount(id);
+ return ResponseEntity.ok("Xoa thanh cong");    }
 }

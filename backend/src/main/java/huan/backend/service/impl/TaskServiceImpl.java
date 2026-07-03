@@ -77,7 +77,7 @@ public class TaskServiceImpl implements TaskService {
         Task task = taskRepository.findById(request.getTaskId())
                 .orElseThrow(() -> new AppException(ErrorCode.TASK_NOT_FOUND));
                 
-        Member currentMember = memberRepository.findByUserId(request.getUserId()).orElseThrow(()-> new AppException(ErrorCode.MEMBER_NOT_FOUND));
+        Member currentMember = memberRepository.findById(request.getId()).orElseThrow(()-> new AppException(ErrorCode.MEMBER_NOT_FOUND));
 
         ProjectRole role = currentMember.getProjectRole();
         Long assigneeId = task.getAssignee() != null ? task.getAssignee().getId() : null;
@@ -89,13 +89,13 @@ public class TaskServiceImpl implements TaskService {
                 }
             } 
             else if (request.getStatus() == TaskStatus.IN_PROGRESS || request.getStatus() == TaskStatus.IN_REVIEW) {
-                if (assigneeId == null || !assigneeId.equals(request.getUserId())) {
+                if (assigneeId == null || !assigneeId.equals(request.getId())) {
                     throw new AppException(ErrorCode.UNAUTHORIZED); 
                 }
             }
         }
         
-        User assignee = userRepository.findById(request.getUserId())
+        User assignee = userRepository.findById(request.getId())
                     .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         TaskLog log = TaskLog.builder()
                 .task(task)
@@ -111,7 +111,7 @@ public class TaskServiceImpl implements TaskService {
     public PageResponse<TaskResponse> getTasksByUserId(Long userId, int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by("id").descending());
         
-        Page<Task> pageData = taskRepository.findByAssigneeId(userId, pageable);
+        Page<Task> pageData = taskRepository.findTasksByAssignee(userId, pageable);
 
         List<TaskResponse> responseList = pageData.getContent().stream()
                 .map(taskMapper::toResponse)

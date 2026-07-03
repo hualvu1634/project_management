@@ -1,7 +1,6 @@
 package huan.backend.service;
 
 import huan.backend.dto.request.ProjectRequest;
-import huan.backend.dto.response.ApiResponse;
 import huan.backend.dto.response.MemberResponse;
 import huan.backend.dto.response.PageResponse;
 import huan.backend.dto.response.ProjectResponse;
@@ -12,5 +11,5 @@ public interface ProjectService {
     PageResponse<MemberResponse> getMembersByProject(Long id, int page, int size);
     PageResponse<TaskResponse> getTasksByProject(Long id, int page, int size);
     ProjectResponse updateProject(Long id, ProjectRequest request);
-    ApiResponse deleteProject(Long id);
+    void deleteProject(Long id);
 }

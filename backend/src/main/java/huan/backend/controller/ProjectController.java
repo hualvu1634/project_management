@@ -1,7 +1,6 @@
 package huan.backend.controller;
 
 import huan.backend.dto.request.ProjectRequest;
-import huan.backend.dto.response.ApiResponse;
 import huan.backend.dto.response.MemberResponse;
 import huan.backend.dto.response.PageResponse;
 import huan.backend.dto.response.ProjectResponse;
@@ -51,7 +50,9 @@ public class ProjectController {
     }
     //xóa dự án
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse> deleteProject(@PathVariable Long id) {
-        return ResponseEntity.ok(projectService.deleteProject(id));
+    public ResponseEntity<String> deleteProject(@PathVariable Long id) {
+        projectService.deleteProject(id);
+         return ResponseEntity.ok("Xoa thanh cong");
+        
     }
 }
