@@ -118,9 +118,9 @@ public class TaskServiceImpl implements TaskService {
                 .collect(Collectors.toList());
 
         return PageResponse.<TaskResponse>builder()
-                .currentPage(page)
-                .pageSize(pageData.getSize())
-                .totalPages(pageData.getTotalPages())
+                .current(page)
+                .size(pageData.getSize())
+                .total(pageData.getTotalPages())
                 .totalElements(pageData.getTotalElements())
                 .data(responseList)
                 .build();

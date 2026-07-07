@@ -59,9 +59,9 @@ public class UserServiceImpl implements UserService {
                 .map(userMapper::toResponse)
                 .toList();
         return PageResponse.<UserResponse>builder()
-                .currentPage(page)
-                .pageSize(pageData.getSize())
-                .totalPages(pageData.getTotalPages())
+                 .current(page)
+                .size(pageData.getSize())
+                .total(pageData.getTotalPages())
                 .totalElements(pageData.getTotalElements())
                 .data(responseList)
                 .build();
@@ -96,9 +96,9 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
 
         return PageResponse.<ProjectResponse>builder()
-                .currentPage(page)
-                .pageSize(memberPage.getSize())
-                .totalPages(memberPage.getTotalPages())
+                .current(page)
+                .size(memberPage.getSize())
+                .total(memberPage.getTotalPages())
                 .totalElements(memberPage.getTotalElements())
                 .data(responseList)
                 .build();

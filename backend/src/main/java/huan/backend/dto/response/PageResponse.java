@@ -9,9 +9,9 @@ import java.util.List;
 @Setter
 @Builder
 public class PageResponse<T> {
-    private int currentPage; // Trang hiện tại
-    private int totalPages;  // Tổng số trang
-    private int pageSize;    // Số lượng phần tử trong trang
+    private int current; 
+    private int total;  
+    private int size;    
     private long totalElements; // Tổng số phần tử
     private List<T> data;    // Dữ liệu
 }

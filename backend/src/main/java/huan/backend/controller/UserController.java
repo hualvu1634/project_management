@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import huan.backend.dto.response.ApiResponse;
 import huan.backend.dto.response.PageResponse;
 import huan.backend.dto.response.ProjectResponse;
 import huan.backend.dto.response.UserResponse;
