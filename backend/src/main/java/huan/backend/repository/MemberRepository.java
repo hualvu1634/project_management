@@ -1,5 +1,7 @@
 package huan.backend.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,6 +19,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Page<Member> findActiveByProject(@Param("projectId") Long projectId, Pageable pageable);
 
     @Query("SELECT m FROM Member m WHERE m.user.id = :userId AND m.isActive = true")
-    Page<Member> findActiveByUser(@Param("userId") Long userId, Pageable pageable);
+    List<Member> findActiveByUser(@Param("userId") Long userId);
 
 }

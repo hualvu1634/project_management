@@ -1,6 +1,8 @@
 package huan.backend.controller;
 
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,9 +33,8 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public  ResponseEntity<PageResponse<ProjectResponse>> getProjectById(@PathVariable Long id, @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size){
-        return ResponseEntity.ok(userService.getProjectsByUserId(id, page, size));
+    public  ResponseEntity<List<ProjectResponse>> getProjectById(@PathVariable Long id){
+        return ResponseEntity.ok(userService.getProjects(id));
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
