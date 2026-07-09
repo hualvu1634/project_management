@@ -13,5 +13,4 @@ public class ProjectResponse implements Serializable {
     private Long id;
     private String name;
     private String description;
-    private Integer teamsize;
 }

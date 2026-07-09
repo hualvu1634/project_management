@@ -35,13 +35,11 @@ public class Project {
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "users_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "owner_id", nullable = false)
+    private User owner;
 
     @Column(nullable = false)
     @Builder.Default
     private Boolean isActive = true;
-     @Column(nullable = false)
-    @Builder.Default
-    private Integer teamsize=1;
+
 }

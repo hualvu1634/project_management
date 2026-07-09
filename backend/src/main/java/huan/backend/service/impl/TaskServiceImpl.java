@@ -18,9 +18,11 @@ import huan.backend.repository.MemberRepository;
 import huan.backend.repository.ProjectRepository;
 import huan.backend.repository.TaskLogRepository;
 import huan.backend.repository.TaskRepository;
-import huan.backend.repository.UserRepository;
 import huan.backend.service.TaskService;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -38,7 +40,7 @@ public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
     private final ProjectRepository projectRepository;
-    private final UserRepository userRepository;
+
     private final MemberRepository memberRepository;
     private final TaskMapper taskMapper;
     private final TaskLogRepository taskLogRepository;
@@ -54,25 +56,28 @@ public class TaskServiceImpl implements TaskService {
         task.setStatus(TaskStatus.TODO);
         task.setProject(project);
 
-        User assignee = userRepository.findById(request.getAssigneeId())
+        Member assignee = memberRepository.findById(request.getAssigneeId())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+      User user = assignee.getUser();
         task.setAssignee(assignee);
         
         Task savedTask = taskRepository.save(task);
-
+        
         TaskLog log = TaskLog.builder()
                 .task(savedTask)
-                .user(assignee) 
+                .member(assignee) 
                 .status(TaskStatus.TODO) 
                 .createdAt(LocalDate.now())
                 .build();
         taskLogRepository.save(log);
-
+        TaskResponse taskResponse = taskMapper.toResponse(savedTask);
+        taskResponse.setAssigneeName(user.getName());
         return taskMapper.toResponse(savedTask);
     }
     
     @Override
     @Transactional
+    @CacheEvict(value = "user_tasks", allEntries = true)
     public TaskResponse updateTaskStatus(StatusRequest request) {
         Task task = taskRepository.findById(request.getTaskId())
                 .orElseThrow(() -> new AppException(ErrorCode.TASK_NOT_FOUND));
@@ -95,11 +100,11 @@ public class TaskServiceImpl implements TaskService {
             }
         }
         
-        User assignee = userRepository.findById(request.getId())
+        Member assignee = memberRepository.findById(request.getId())
                     .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         TaskLog log = TaskLog.builder()
                 .task(task)
-                .user(assignee) 
+                .member(assignee) 
                 .status(request.getStatus()) 
                 .build();
         taskLogRepository.save(log);
@@ -108,6 +113,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Cacheable(value = "user_tasks", key = "#userId + '-' + #page + '-' + #size")
     public PageResponse<TaskResponse> getTasksByUserId(Long userId, int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by("id").descending());
         

@@ -1,5 +1,6 @@
 package huan.backend.dto.response;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 import huan.backend.enums.Priority;
@@ -11,7 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class TaskResponse {
+public class TaskResponse implements Serializable {
     private String title;
     private TaskStatus status;
     private Priority priority;

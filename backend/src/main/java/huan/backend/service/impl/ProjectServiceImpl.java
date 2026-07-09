@@ -48,7 +48,7 @@ public class ProjectServiceImpl implements ProjectService {
         User user = userRepository.findById(request.getOwnerId())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         Project project = projectMapper.toEntity(request);
-        project.setUser(user);
+        project.setOwner(user);
         Project save = projectRepository.save(project);
         Member pmMember = Member.builder()
                 .projectRole(ProjectRole.PROJECT_MANAGER)
@@ -81,6 +81,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    
     public PageResponse<TaskResponse> getTasksByProject(Long id, int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by("id").ascending());
         Page<Task> pageData = taskRepository.findTasksByProject(id, pageable);

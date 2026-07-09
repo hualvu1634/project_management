@@ -14,6 +14,6 @@ public class PageResponse<T>  implements Serializable{
     private int current; 
     private int total;  
     private int size;    
-    private long totalElements; // Tổng số phần tử
-    private List<T> data;    // Dữ liệu
+    private long totalElements; 
+    private List<T> data;    
 }

@@ -9,7 +9,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface TaskMapper {
 
-    @Mapping(target = "assigneeName", source = "assignee.name")
+    @Mapping(target = "assigneeName",ignore = true)
     TaskResponse toResponse(Task task);
 
     // Map từ Request vào Entity

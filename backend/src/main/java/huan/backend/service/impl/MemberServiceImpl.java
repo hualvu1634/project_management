@@ -16,6 +16,8 @@ import huan.backend.repository.UserRepository;
 import huan.backend.service.EmailService;
 import huan.backend.service.MemberService;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
 
@@ -29,6 +31,7 @@ public class MemberServiceImpl implements MemberService {
     private final MemberMapper memberMapper;
 
     @Override
+    @CacheEvict(value = {"user_projects", "project_members"}, allEntries = true)
     public MailResponse addMember(MemberRequest request) {
         Project project = projectRepository.findById(request.getProjectId())
                 .orElseThrow(() -> new AppException(ErrorCode.PROJECT_NOT_FOUND));
@@ -44,7 +47,6 @@ public class MemberServiceImpl implements MemberService {
         member.setProject(project);
         member.setUser(user);
         member.setProjectRole(ProjectRole.MEMBER);
-        project.setTeamsize(project.getTeamsize() + 1);
         projectRepository.save(project);
         memberRepository.save(member);
         
@@ -59,17 +61,13 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @CacheEvict(value = {"user_projects", "project_members"}, allEntries = true)
     public void removeMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(()->  new AppException(ErrorCode.MEMBER_NOT_FOUND));
         
         member.setIsActive(false);
         memberRepository.save(member);
-
-        Project project = member.getProject();
-        if (project.getTeamsize() > 0) {
-            project.setTeamsize(project.getTeamsize() - 1);
-            projectRepository.save(project);
-        }
+        
 
     }
 }

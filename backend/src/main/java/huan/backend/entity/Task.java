@@ -53,6 +53,6 @@ public class Task {
     private LocalDate createDate;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assignee_id")
-    private User assignee;
+    private Member assignee;
 
 }

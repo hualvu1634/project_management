@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Cacheable(value = "user_projects", key = "#userId")
     public List<ProjectResponse> getProjects(Long userId) {
-        List<Project> list = projectRepository.findByUserId(userId);
+        List<Project> list = projectRepository.findByOwnerId(userId);
         List<ProjectResponse> responseList = list.stream()
                 .map(projectMapper::toResponse)
                 .toList();

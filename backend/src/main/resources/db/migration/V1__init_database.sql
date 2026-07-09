@@ -14,10 +14,9 @@ CREATE TABLE  IF NOT EXISTS  projects (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     description TEXT,
-    users_id BIGINT NOT NULL,
+    owner_id BIGINT NOT NULL,
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
-    teamsize INT NOT NULL DEFAULT 1,
-    CONSTRAINT fk_projects_users FOREIGN KEY (users_id) REFERENCES users(id)
+    CONSTRAINT fk_projects_users FOREIGN KEY (owner_id) REFERENCES users(id)
 );
 
 CREATE TABLE IF NOT EXISTS members (
@@ -39,15 +38,15 @@ CREATE TABLE IF NOT EXISTS tasks (
     create_date DATE NOT NULL,
     assignee_id BIGINT,
     CONSTRAINT fk_tasks_projects FOREIGN KEY (project_id) REFERENCES projects(id),
-    CONSTRAINT fk_tasks_users FOREIGN KEY (assignee_id) REFERENCES users(id)
+    CONSTRAINT fk_tasks_members FOREIGN KEY (assignee_id) REFERENCES members(id) 
 );
 
 CREATE TABLE IF NOT EXISTS task_logs (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     task_id BIGINT NOT NULL,
-    user_id BIGINT NOT NULL,
+    member_id BIGINT NOT NULL,
     status VARCHAR(50) NOT NULL,
     created_at DATE NOT NULL,
     CONSTRAINT fk_task_logs_tasks FOREIGN KEY (task_id) REFERENCES tasks(id),
-    CONSTRAINT fk_task_logs_users FOREIGN KEY (user_id) REFERENCES users(id)
+    CONSTRAINT fk_task_logs_users FOREIGN KEY (member_id) REFERENCES members(id)
 );
