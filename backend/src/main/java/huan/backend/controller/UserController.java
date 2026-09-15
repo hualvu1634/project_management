@@ -5,17 +5,13 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import huan.backend.dto.response.PageResponse;
 import huan.backend.dto.response.ProjectResponse;
 import huan.backend.dto.response.UserResponse;
 import huan.backend.service.UserService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -37,18 +33,5 @@ public class UserController {
         return ResponseEntity.ok(userService.getProjects(id));
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @GetMapping
-    public ResponseEntity<PageResponse<UserResponse>> getAll(
-            @RequestParam(value = "page", defaultValue = "1") int page) {
-        int pageSize = 10; 
-        PageResponse<UserResponse> response = userService.getAllUsers(page, pageSize);
-        return ResponseEntity.ok(response);
-    }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> delAccount(@Valid @PathVariable("id") Long id){
-        userService.deleteAccount(id);
- return ResponseEntity.ok("Xoa thanh cong");    }
 }

@@ -48,8 +48,7 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING) 
     private Role role;
     @Column(nullable = false)
-    @Builder.Default
-    private Boolean isActive = true;
+
     @Override
     public String getPassword() {
         return password;
@@ -81,11 +80,6 @@ public class User implements UserDetails {
         return true;
     }
 
-    @Override
-    public boolean isEnabled() {
-       
-        return isActive;
-    }
     
    
 }

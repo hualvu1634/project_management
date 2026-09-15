@@ -15,6 +15,6 @@ public interface UserMapper {
     @Mapping(target = "password", ignore = true) 
     @Mapping(target = "role", ignore = true)
    @Mapping(target = "id", ignore = true) 
-    @Mapping(target = "isActive", ignore = true) 
+
     User toEntity(UserRequest request);
 }

@@ -1,7 +1,7 @@
 package huan.backend.service.impl;
 
 import huan.backend.dto.request.UserRequest;
-import huan.backend.dto.response.PageResponse;
+
 import huan.backend.dto.response.ProjectResponse;
 import huan.backend.dto.response.UserResponse;
 import huan.backend.entity.Project;
@@ -17,10 +17,7 @@ import huan.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -52,24 +49,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Cacheable(value = "users", key = "#page + '-' + #size")
-    public PageResponse<UserResponse> getAllUsers(int page, int size) {
-        Pageable pageable = PageRequest.of(page - 1, size, Sort.by("id").ascending());
-        Page<User> pageData = userRepository.findAll(pageable);
-
-        List<UserResponse> responseList = pageData.getContent().stream()
-                .map(userMapper::toResponse)
-                .toList();
-        return PageResponse.<UserResponse>builder()
-                 .current(page)
-                .size(pageData.getSize())
-                .total(pageData.getTotalPages())
-                .totalElements(pageData.getTotalElements())
-                .data(responseList)
-                .build();
-    }
-
-    @Override
     public UserResponse getAccount() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email)
@@ -77,13 +56,6 @@ public class UserServiceImpl implements UserService {
         return userMapper.toResponse(user);
     }
 
-    @Override
-    @CacheEvict(value = {"users", "user_projects"}, allEntries = true)
-    public void deleteAccount(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-        user.setIsActive(false); 
-        userRepository.save(user); 
-    }
     
     @Override
     @Cacheable(value = "user_projects", key = "#userId")

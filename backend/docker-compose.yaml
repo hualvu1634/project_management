@@ -1,0 +1,30 @@
+name: project_management
+
+services:
+  app:
+    build: .    
+    image: spring_app                   
+    container_name: project_management_app
+    ports:
+      - "8080:8080"                 
+    depends_on:
+      - mysql                  
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/project_management?allowPublicKeyRetrieval=true&useSSL=false
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: hual-1325
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+  mysql: 
+    image: mysql:8.0 
+    restart: unless-stopped 
+    container_name: project_management_db
+    environment: 
+      MYSQL_ROOT_PASSWORD: hual-1325 
+      MYSQL_DATABASE: project_management
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:

@@ -1,7 +1,6 @@
 package huan.backend.service.impl;
 
 import huan.backend.dto.request.ProjectRequest;
-
 import huan.backend.dto.response.MemberResponse;
 import huan.backend.dto.response.PageResponse;
 import huan.backend.dto.response.ProjectResponse;
@@ -22,6 +21,8 @@ import huan.backend.repository.TaskRepository;
 import huan.backend.repository.UserRepository;
 import huan.backend.service.ProjectService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -44,6 +45,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final TaskMapper taskMapper;
 
     @Override
+    @CacheEvict(value = {"user_projects", "projects"}, allEntries = true)
     public ProjectResponse createProject(ProjectRequest request) {
         User user = userRepository.findById(request.getOwnerId())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
@@ -61,6 +63,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Cacheable(value = "project_members", key = "#id + '-' + #page + '-' + #size")
     public PageResponse<MemberResponse> getMembersByProject(Long id, int page, int size) {
 
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by("id").ascending());
@@ -77,11 +80,10 @@ public class ProjectServiceImpl implements ProjectService {
                 .totalElements(pageData.getTotalElements())
                 .data(responseList)
                 .build();
-     
     }
 
     @Override
-    
+    @Cacheable(value = "project_tasks", key = "#id + '-' + #page + '-' + #size")
     public PageResponse<TaskResponse> getTasksByProject(Long id, int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by("id").ascending());
         Page<Task> pageData = taskRepository.findTasksByProject(id, pageable);
@@ -100,6 +102,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @CacheEvict(value = {"user_projects", "projects"}, allEntries = true)
     public ProjectResponse updateProject(Long id, ProjectRequest request) {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.PROJECT_NOT_FOUND));
@@ -111,11 +114,12 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    // Xóa/vô hiệu hóa dự án thì cần xóa cache liên quan
+    @CacheEvict(value = {"user_projects", "projects", "project_members", "project_tasks"}, allEntries = true)
     public void deleteProject(Long id) {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.PROJECT_NOT_FOUND));
         project.setIsActive(false);
         projectRepository.save(project);
-       
     }
 }

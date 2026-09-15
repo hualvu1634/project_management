@@ -6,8 +6,7 @@ CREATE TABLE  IF NOT EXISTS  users (
     password VARCHAR(255) NOT NULL,
     name VARCHAR(30) NOT NULL,
     phone_number VARCHAR(10) NOT NULL UNIQUE,
-    role VARCHAR(50) NOT NULL,
-    is_active BOOLEAN NOT NULL DEFAULT TRUE
+    role VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE  IF NOT EXISTS  projects (
