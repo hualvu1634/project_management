@@ -2,11 +2,14 @@ package huan.backend.controller;
 
 import huan.backend.dto.request.ProjectRequest;
 import huan.backend.dto.response.MemberResponse;
-import huan.backend.dto.response.PageResponse;
+
 import huan.backend.dto.response.ProjectResponse;
 import huan.backend.dto.response.TaskResponse;
 import huan.backend.service.ProjectService;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,21 +27,18 @@ public class ProjectController {
     }
 
     @GetMapping("/{id}")
-      public ResponseEntity<PageResponse<TaskResponse>> getTasksByProject(
-            @PathVariable("id") Long id,
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size
+      public ResponseEntity<List<TaskResponse>> getTasksByProject(
+            @PathVariable("id") Long id
+
     ) {
-        return ResponseEntity.ok(projectService.getTasksByProject(id, page, size));
+        return ResponseEntity.ok(projectService.getTasksByProject(id));
     }
 
     @GetMapping("/{id}/members")
-        public ResponseEntity<PageResponse<MemberResponse>> getMembersByProject(
-            @PathVariable Long id,
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
-        return ResponseEntity.ok(projectService.getMembersByProject(id, page, size));
+        public ResponseEntity<List<MemberResponse>> getMembersByProject(
+            @PathVariable Long id
+   ) {
+        return ResponseEntity.ok(projectService.getMembersByProject(id));
     }
 
     @PutMapping("/{id}")

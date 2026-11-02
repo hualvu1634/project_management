@@ -9,4 +9,5 @@ public interface TaskService {
     TaskResponse createTask(TaskRequest request);
     TaskResponse updateTaskStatus(StatusRequest request);
     PageResponse<TaskResponse> getTasksByUserId(Long userId, int page, int size);
+    void deleteTask(Long taskId);
 }

@@ -2,7 +2,7 @@ package huan.backend.controller;
 
 import huan.backend.dto.request.TaskRequest;
 import huan.backend.dto.request.StatusRequest;
-
+import huan.backend.dto.response.PageResponse;
 import huan.backend.dto.response.TaskResponse;
 
 import huan.backend.service.TaskService;
@@ -23,8 +23,15 @@ public class TaskController {
         return new ResponseEntity<>(taskService.createTask(request), HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping
     public ResponseEntity<TaskResponse> updateTaskStatus(    @RequestBody StatusRequest taskStatusRequest) { 
         return ResponseEntity.ok(taskService.updateTaskStatus(taskStatusRequest));
+    }
+    @GetMapping("/{userId}")
+    public ResponseEntity<PageResponse<TaskResponse>> getTasksByUserId(
+            @PathVariable Long userId,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(taskService.getTasksByUserId(userId, page, size));
     }
 }

@@ -2,7 +2,6 @@ package huan.backend.service.impl;
 
 import huan.backend.dto.request.ProjectRequest;
 import huan.backend.dto.response.MemberResponse;
-import huan.backend.dto.response.PageResponse;
 import huan.backend.dto.response.ProjectResponse;
 import huan.backend.dto.response.TaskResponse;
 import huan.backend.entity.Member;
@@ -23,10 +22,7 @@ import huan.backend.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -63,42 +59,25 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    @Cacheable(value = "project_members", key = "#id + '-' + #page + '-' + #size")
-    public PageResponse<MemberResponse> getMembersByProject(Long id, int page, int size) {
+    @Cacheable(value = "project_members", key = "#id")
+    public List<MemberResponse> getMembersByProject(Long id) {
 
-        Pageable pageable = PageRequest.of(page - 1, size, Sort.by("id").ascending());
-        Page<Member> pageData = memberRepository.findActiveByProject(id, pageable);
 
-        List<MemberResponse> responseList = pageData.getContent().stream()
+        List<Member> pageData = memberRepository.findActiveByProject(id);
+
+        return pageData.stream()
                 .map(memberMapper::toResponse)
                 .collect(Collectors.toList());
-
-        return PageResponse.<MemberResponse>builder()
-                .current(page)
-                .size(pageData.getSize())
-                .total(pageData.getTotalPages())
-                .totalElements(pageData.getTotalElements())
-                .data(responseList)
-                .build();
     }
 
     @Override
-    @Cacheable(value = "project_tasks", key = "#id + '-' + #page + '-' + #size")
-    public PageResponse<TaskResponse> getTasksByProject(Long id, int page, int size) {
-        Pageable pageable = PageRequest.of(page - 1, size, Sort.by("id").ascending());
-        Page<Task> pageData = taskRepository.findTasksByProject(id, pageable);
+    @Cacheable(value = "project_tasks", key = "#id")
+    public List<TaskResponse> getTasksByProject(Long id) {
+        List<Task> pageData = taskRepository.findByProjectId(id);
 
-        List<TaskResponse> responseList = pageData.getContent().stream()
+        return pageData.stream()
                 .map(taskMapper::toResponse)
                 .collect(Collectors.toList());
-
-        return PageResponse.<TaskResponse>builder()
-                .current(page)
-                .size(pageData.getSize())
-                .total(pageData.getTotalPages())
-                .totalElements(pageData.getTotalElements())
-                .data(responseList)
-                .build();
     }
 
     @Override
@@ -114,7 +93,6 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    // Xóa/vô hiệu hóa dự án thì cần xóa cache liên quan
     @CacheEvict(value = {"user_projects", "projects", "project_members", "project_tasks"}, allEntries = true)
     public void deleteProject(Long id) {
         Project project = projectRepository.findById(id)

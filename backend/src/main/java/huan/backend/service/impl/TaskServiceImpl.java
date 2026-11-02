@@ -131,4 +131,20 @@ public class TaskServiceImpl implements TaskService {
                 .data(responseList)
                 .build();
     }
+
+
+
+    @Override
+    @Transactional
+    @CacheEvict(value = "user_tasks", allEntries = true)
+    public void deleteTask(Long taskId) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new AppException(ErrorCode.TASK_NOT_FOUND));
+
+        taskLogRepository.deleteByTaskId(taskId); 
+        
+        taskRepository.delete(task);
+}
+
+
 }
