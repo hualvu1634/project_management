@@ -20,14 +20,16 @@ import huan.backend.repository.TaskRepository;
 import huan.backend.repository.UserRepository;
 import huan.backend.service.ProjectService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProjectServiceImpl implements ProjectService {
@@ -67,17 +69,18 @@ public class ProjectServiceImpl implements ProjectService {
 
         return pageData.stream()
                 .map(memberMapper::toResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
     @Cacheable(value = "project_tasks", key = "#id")
     public List<TaskResponse> getTasksByProject(Long id) {
         List<Task> pageData = taskRepository.findByProjectId(id);
-
-        return pageData.stream()
+        log.info("Tìm thấy {} task cho project ID: {}", pageData.size(), id);
+        List<TaskResponse> taskResponses = pageData.stream()
                 .map(taskMapper::toResponse)
-                .collect(Collectors.toList());
+                .toList();
+        return taskResponses;
     }
 
     @Override

@@ -7,13 +7,14 @@ import huan.backend.dto.response.ProjectResponse;
 import huan.backend.dto.response.TaskResponse;
 import huan.backend.service.ProjectService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+@Slf4j
 @RestController
 @RequestMapping("/api/projects")
 @RequiredArgsConstructor
@@ -38,6 +39,7 @@ public class ProjectController {
         public ResponseEntity<List<MemberResponse>> getMembersByProject(
             @PathVariable Long id
    ) {
+    log.info(">>>>> Đã nhận được Project ID truyền lên: {}", id);
         return ResponseEntity.ok(projectService.getMembersByProject(id));
     }
 
