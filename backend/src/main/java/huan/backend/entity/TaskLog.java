@@ -48,4 +48,8 @@ public class TaskLog {
 
     @Column(nullable = false)
     private LocalDate createdAt ;
+
+
+    @Column(name = "file_path")
+    private String filePath;
 }

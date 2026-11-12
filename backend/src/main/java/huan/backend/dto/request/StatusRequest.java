@@ -1,5 +1,7 @@
 package huan.backend.dto.request;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import huan.backend.enums.TaskStatus;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,4 +12,5 @@ public class StatusRequest {
     private Long taskId;
     private TaskStatus status;
     private Long id;
+    private MultipartFile file;
 }
