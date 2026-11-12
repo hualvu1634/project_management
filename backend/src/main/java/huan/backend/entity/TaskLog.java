@@ -50,6 +50,6 @@ public class TaskLog {
     private LocalDate createdAt ;
 
 
-    @Column(name = "file_path")
+     @Column(name = "file_path", columnDefinition = "TEXT")
     private String filePath;
 }

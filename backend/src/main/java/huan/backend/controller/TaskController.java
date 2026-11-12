@@ -1,7 +1,7 @@
 package huan.backend.controller;
 
 import huan.backend.dto.request.TaskRequest;
-import huan.backend.dto.request.StatusRequest;
+import huan.backend.dto.request.SubmitRequest;
 import huan.backend.dto.response.PageResponse;
 import huan.backend.dto.response.TaskResponse;
 import huan.backend.service.FileUploadService;
@@ -37,8 +37,9 @@ public class TaskController {
         }
     }
     @PutMapping
-    public ResponseEntity<TaskResponse> updateTaskStatus(    @RequestBody StatusRequest taskStatusRequest) { 
-        return ResponseEntity.ok(taskService.updateTaskStatus(taskStatusRequest));
+    public ResponseEntity<String> submitTask(    @RequestBody SubmitRequest taskStatusRequest) { 
+        taskService.submitTask(taskStatusRequest);
+        return ResponseEntity.ok("Nhiệm vụ đã được nộp.");
     }
     @GetMapping("/{userId}")
     public ResponseEntity<PageResponse<TaskResponse>> getTasksByUserId(

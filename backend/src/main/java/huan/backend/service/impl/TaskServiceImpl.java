@@ -1,7 +1,7 @@
 package huan.backend.service.impl;
 
 import huan.backend.dto.request.TaskRequest;
-import huan.backend.dto.request.StatusRequest;
+import huan.backend.dto.request.SubmitRequest;
 import huan.backend.dto.response.PageResponse;
 import huan.backend.dto.response.TaskResponse;
 import huan.backend.entity.Member;
@@ -10,7 +10,6 @@ import huan.backend.entity.Task;
 import huan.backend.entity.TaskLog;
 import huan.backend.entity.User;
 import huan.backend.enums.ErrorCode;
-import huan.backend.enums.ProjectRole;
 import huan.backend.enums.TaskStatus;
 import huan.backend.exception.AppException;
 import huan.backend.mapper.TaskMapper;
@@ -78,38 +77,25 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     @CacheEvict(value = "user_tasks", allEntries = true)
-    public TaskResponse updateTaskStatus(StatusRequest request) {
+    public void submitTask(SubmitRequest request) {
         Task task = taskRepository.findById(request.getTaskId())
                 .orElseThrow(() -> new AppException(ErrorCode.TASK_NOT_FOUND));
                 
-        Member currentMember = memberRepository.findById(request.getId()).orElseThrow(()-> new AppException(ErrorCode.MEMBER_NOT_FOUND));
+        Member assignee = memberRepository.findById(request.getId()).orElseThrow(()
+        -> new AppException(ErrorCode.MEMBER_NOT_FOUND));
 
-        ProjectRole role = currentMember.getProjectRole();
-        Long assigneeId = task.getAssignee() != null ? task.getAssignee().getId() : null;
 
-        if (role != ProjectRole.PROJECT_MANAGER) { 
-            if (request.getStatus() == TaskStatus.DONE) {
-                if (role != ProjectRole.MEMBER) {
-                    throw new AppException(ErrorCode.UNAUTHORIZED); 
-                }
-            } 
-            else if (request.getStatus() == TaskStatus.IN_PROGRESS || request.getStatus() == TaskStatus.IN_REVIEW) {
-                if (assigneeId == null || !assigneeId.equals(request.getId())) {
-                    throw new AppException(ErrorCode.UNAUTHORIZED); 
-                }
-            }
-        }
-        
-        Member assignee = memberRepository.findById(request.getId())
-                    .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+    
+      
+
         TaskLog log = TaskLog.builder()
                 .task(task)
                 .member(assignee) 
-                .status(request.getStatus()) 
+                .status(TaskStatus.DONE) 
+                .filePath(request.getFilePath())
                 .build();
         taskLogRepository.save(log);
-        task.setStatus(request.getStatus());
-        return taskMapper.toResponse(taskRepository.save(task));
+        task.setStatus(TaskStatus.DONE);
     }
 
     @Override
