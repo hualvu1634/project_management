@@ -3,17 +3,20 @@ name: project_management
 services:
   app:
     build: .    
-    image: spring_app                   
+    image:  project_management_app                   
     container_name: project_management_app
     ports:
       - "8080:8080"                 
     depends_on:
-      - mysql                  
+      - mysql
+      - redis                  
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/project_management?allowPublicKeyRetrieval=true&useSSL=false
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: hual-1325
       SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
   mysql: 
     image: mysql:8.0 
     restart: unless-stopped 
@@ -26,5 +29,15 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
 
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    container_name: project_management_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
 volumes:
   mysql_data:
+  redis_data:

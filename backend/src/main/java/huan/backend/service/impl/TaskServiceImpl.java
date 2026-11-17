@@ -37,100 +37,93 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TaskServiceImpl implements TaskService {
 
-    private final TaskRepository taskRepository;
-    private final ProjectRepository projectRepository;
+        private final TaskRepository taskRepository;
+        private final ProjectRepository projectRepository;
 
-    private final MemberRepository memberRepository;
-    private final TaskMapper taskMapper;
-    private final TaskLogRepository taskLogRepository;
+        private final MemberRepository memberRepository;
+        private final TaskMapper taskMapper;
+        private final TaskLogRepository taskLogRepository;
 
-    @Override
-    @Transactional
-    public TaskResponse createTask(TaskRequest request) {
-        Project project = projectRepository.findById(request.getProjectId())
-                .orElseThrow(() -> new AppException(ErrorCode.PROJECT_NOT_FOUND));
+        @Override
+        @Transactional
+        public TaskResponse createTask(TaskRequest request) {
+                Project project = projectRepository.findById(request.getProjectId())
+                                .orElseThrow(() -> new AppException(ErrorCode.PROJECT_NOT_FOUND));
 
-        Task task = taskMapper.toEntity(request);
-        task.setCreateDate(LocalDate.now());
-        task.setStatus(TaskStatus.TODO);
-        task.setProject(project);
+                Task task = taskMapper.toEntity(request);
+                task.setCreateDate(LocalDate.now());
+                task.setStatus(TaskStatus.TODO);
+                task.setProject(project);
 
-        Member assignee = memberRepository.findById(request.getAssigneeId())
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-      User user = assignee.getUser();
-        task.setAssignee(assignee);
-        
-        Task savedTask = taskRepository.save(task);
-        
-        TaskLog log = TaskLog.builder()
-                .task(savedTask)
-                .member(assignee) 
-                .status(TaskStatus.TODO) 
-                .createdAt(LocalDate.now())
-                .build();
-        taskLogRepository.save(log);
-        TaskResponse taskResponse = taskMapper.toResponse(savedTask);
-        taskResponse.setAssigneeName(user.getName());
-        return taskMapper.toResponse(savedTask);
-    }
-    
-    @Override
-    @Transactional
-    @CacheEvict(value = "user_tasks", allEntries = true)
-    public void submitTask(SubmitRequest request) {
-        Task task = taskRepository.findById(request.getTaskId())
-                .orElseThrow(() -> new AppException(ErrorCode.TASK_NOT_FOUND));
-                
-        Member assignee = memberRepository.findById(request.getId()).orElseThrow(()
-        -> new AppException(ErrorCode.MEMBER_NOT_FOUND));
+                Member assignee = memberRepository.findById(request.getAssigneeId())
+                                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+                User user = assignee.getUser();
+                task.setAssignee(assignee);
 
+                Task savedTask = taskRepository.save(task);
 
-    
-      
+                TaskLog log = TaskLog.builder()
+                                .task(savedTask)
+                                .member(assignee)
+                                .status(TaskStatus.TODO)
+                                .createdAt(LocalDate.now())
+                                .build();
+                taskLogRepository.save(log);
+                TaskResponse taskResponse = taskMapper.toResponse(savedTask);
+                taskResponse.setAssigneeName(user.getName());
+                return taskResponse;
+        }
 
-        TaskLog log = TaskLog.builder()
-                .task(task)
-                .member(assignee) 
-                .status(TaskStatus.DONE) 
-                .filePath(request.getFilePath())
-                .build();
-        taskLogRepository.save(log);
-        task.setStatus(TaskStatus.DONE);
-    }
+        @Override
+        @Transactional
+        @CacheEvict(value = "user_tasks", allEntries = true)
+        public void submitTask(SubmitRequest request) {
+                Task task = taskRepository.findById(request.getTaskId())
+                                .orElseThrow(() -> new AppException(ErrorCode.TASK_NOT_FOUND));
 
-    @Override
-    @Cacheable(value = "user_tasks", key = "#userId + '-' + #page + '-' + #size")
-    public PageResponse<TaskResponse> getTasksByUserId(Long userId, int page, int size) {
-        Pageable pageable = PageRequest.of(page - 1, size, Sort.by("id").descending());
-        
-        Page<Task> pageData = taskRepository.findTasksByAssignee(userId, pageable);
+                Member assignee = memberRepository.findById(request.getId())
+                                .orElseThrow(() -> new AppException(ErrorCode.MEMBER_NOT_FOUND));
 
-        List<TaskResponse> responseList = pageData.getContent().stream()
-                .map(taskMapper::toResponse)
-                .collect(Collectors.toList());
+                TaskLog log = TaskLog.builder()
+                                .task(task)
+                                .member(assignee)
+                                .status(TaskStatus.DONE)
+                                .filePath(request.getFilePath())
+                                .build();
+                taskLogRepository.save(log);
+                task.setStatus(TaskStatus.DONE);
+        }
 
-        return PageResponse.<TaskResponse>builder()
-                .current(page)
-                .size(pageData.getSize())
-                .total(pageData.getTotalPages())
-                .totalElements(pageData.getTotalElements())
-                .data(responseList)
-                .build();
-    }
+        @Override
+        @Cacheable(value = "user_tasks", key = "#userId + '-' + #page + '-' + #size")
+        public PageResponse<TaskResponse> getTasksByUserId(Long userId, int page, int size) {
+                Pageable pageable = PageRequest.of(page - 1, size, Sort.by("id").descending());
 
+                Page<Task> pageData = taskRepository.findTasksByAssignee(userId, pageable);
 
+                List<TaskResponse> responseList = pageData.getContent().stream()
+                                .map(taskMapper::toResponse)
+                                .collect(Collectors.toList());
 
-    @Override
-    @Transactional
-    @CacheEvict(value = "user_tasks", allEntries = true)
-    public void deleteTask(Long taskId) {
-        Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new AppException(ErrorCode.TASK_NOT_FOUND));
+                return PageResponse.<TaskResponse>builder()
+                                .current(page)
+                                .size(pageData.getSize())
+                                .total(pageData.getTotalPages())
+                                .totalElements(pageData.getTotalElements())
+                                .data(responseList)
+                                .build();
+        }
 
-        taskLogRepository.deleteByTaskId(taskId); 
-        
-        taskRepository.delete(task);
-}
+        @Override
+        @Transactional
+        @CacheEvict(value = "user_tasks", allEntries = true)
+        public void deleteTask(Long taskId) {
+                Task task = taskRepository.findById(taskId)
+                                .orElseThrow(() -> new AppException(ErrorCode.TASK_NOT_FOUND));
 
+                taskLogRepository.deleteByTaskId(taskId);
+
+                taskRepository.delete(task);
+        }
 
 }

@@ -8,7 +8,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
+import java.nio.file.StandardCopyOption;
+import java.util.UUID;
 
 @Service
 public class FileUploadService {
@@ -20,14 +21,15 @@ public class FileUploadService {
             throw new IllegalArgumentException("File rỗng, không thể tải lên!");
         }
 
-
         Path uploadPath = Paths.get(upload);
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
         }
+        String originalFilename = Paths.get(file.getOriginalFilename()).getFileName().toString();
 
-            Path filePath = Paths.get(upload + file.getOriginalFilename());
-        Files.write(filePath, file.getBytes());
-        return file.getOriginalFilename();
+        String uniqueFileName = UUID.randomUUID().toString() + "_" + originalFilename;
+        Path destination = uploadPath.resolve(uniqueFileName);
+        Files.copy(file.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
+        return uniqueFileName;
     }
 }
