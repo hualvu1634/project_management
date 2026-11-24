@@ -88,6 +88,7 @@ public class TaskServiceImpl implements TaskService {
                                 .task(task)
                                 .member(assignee)
                                 .status(TaskStatus.DONE)
+                                .createdAt(LocalDate.now())
                                 .filePath(request.getFilePath())
                                 .build();
                 taskLogRepository.save(log);
